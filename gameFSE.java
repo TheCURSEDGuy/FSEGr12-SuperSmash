@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Observer;
+
 import javax.swing.*;
 
 public class gameFSE extends JFrame{
@@ -11,8 +13,9 @@ public class gameFSE extends JFrame{
 		super("Move the Box");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		add(game);
-		pack();  // set the size of my Frame exactly big enough to hold the contents
 		setVisible(true);
+		setSize(1600, 1000);
+		
     }
     
     public static void main(String[] arguments) {
@@ -26,20 +29,24 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
     private boolean text1 = true;
     private boolean text2 = false;
     int frameCnt = 0;
-	Font fontLocal=null, fontSys=null;
+	Font fontLocal=null, fontSys=null, fontLocal2 = null;
+	int txtX = -400;
+	int txtTransparency = 0;
 	
 	private boolean []keys;
 	Timer timer;
 	Image back;
 	
 	public GamePanel(){
-		back = new ImageIcon("OuterSpace.jpg").getImage();
 		keys = new boolean[KeyEvent.KEY_LAST+1];
 
         String fName = "TITLEFONT.ttf";
+		String fName2 = "SUBTITLEFONT.otf";
     	InputStream is = GamePanel.class.getResourceAsStream(fName);
+		InputStream is2 = GamePanel.class.getResourceAsStream(fName2);
     	try{
-    		fontLocal = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(32f);
+    		fontLocal = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(200f);
+			fontLocal2 = Font.createFont(Font.TRUETYPE_FONT, is2).deriveFont(30f);
     	}
     	catch(IOException ex){
     		System.out.println(ex);	
@@ -119,14 +126,20 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	@Override
 	public void paint(Graphics g){
 		if(screen == INTRO){
-            g.setColor(Color.BLACK);  
+			if(txtX < 400){
+				txtX += 40;	
+			}
+			else if(txtTransparency < 255){
+				txtTransparency += 5;
+			}
+			g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.red);  
 		    g.setFont(fontLocal);
-		    FontMetrics fm = g.getFontMetrics(fontSys);
-		    int wid = fm.stringWidth("Font From System: ");
-            g.drawString("Font From System: ",500-wid,100);
-            if(text1){
-                
-            }
+		    g.drawString("SMASH", txtX, 400);
+			g.setColor(new Color(255, 255, 255, txtTransparency));
+			g.setFont(fontLocal2);
+			g.drawString("Press sumn to start", txtX, 200);
+			g.setColor(Color.white);
         }
     }
 }
