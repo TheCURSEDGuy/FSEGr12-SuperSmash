@@ -30,8 +30,23 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
     private boolean text2 = false;
     int frameCnt = 0;
 	Font fontLocal=null, fontSys=null, fontLocal2 = null;
+
+	// INTRO
 	int txtX = -400;
 	int txtTransparency = 0;
+	int imgtransparency = 0;
+	boolean introOver = false;
+	boolean START = false;
+	int polX = 0;
+	int polY = 0;
+	int polTransparency = 0;
+
+	// CHARSELECT
+	int fadeLIGHT = 255;
+	int fadeINCHAR = 0;
+	int charX = 0;
+	int charY = 0;
+	int charTransparency = 0;
 	
 	private boolean []keys;
 	Timer timer;
@@ -94,8 +109,17 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	@Override
 	public void keyPressed(KeyEvent ke){
 		int key = ke.getKeyCode();
-		System.out.println(key);
 		keys[key] = true;
+		if(screen == INTRO && introOver){
+			START = true;
+		}
+		if(screen == CHARSELECT){
+			if(key == KeyEvent.VK_ESCAPE){
+				screen = INTRO;
+			}
+		}
+		
+		
 	}
 	
 	@Override
@@ -126,11 +150,43 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	@Override
 	public void paint(Graphics g){
 		if(screen == INTRO){
+			System.out.println(START);
 			if(txtX < 400){
-				txtX += 40;	
+				txtX += 50;	
 			}
 			else if(txtTransparency < 255){
 				txtTransparency += 5;
+			}
+			else{
+				introOver = true;
+			}
+			if(START && imgtransparency < 255){
+				imgtransparency += 15;
+			}
+			else if(START && imgtransparency >= 255 && polX <= getWidth() && polY <= getHeight()){
+				System.out.println(polX + " " + polY);
+				polTransparency = 255;
+				polX += 50;
+				polY += 50;
+			}
+			else if(START){
+				System.out.println(screen);
+				System.out.println("WTF");
+				txtX = -400;
+				txtTransparency = 0;
+				imgtransparency = 0;
+				polX = 0;
+				polY = 0;
+				polTransparency = 0;
+				introOver = false;
+				START = false;
+				fadeLIGHT = 255;
+				fadeINCHAR = 0;
+				charX = 0;
+				charY = 0;
+				charTransparency = 0;
+
+				screen = CHARSELECT;
 			}
 			g.fillRect(0, 0, getWidth(), getHeight());
             g.setColor(Color.red);  
@@ -138,8 +194,30 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		    g.drawString("SMASH", txtX, 400);
 			g.setColor(new Color(255, 255, 255, txtTransparency));
 			g.setFont(fontLocal2);
-			g.drawString("Press sumn to start", txtX, 200);
-			g.setColor(Color.white);
+			g.drawString("Press sumn to start", txtX, 450);
+			g.setColor(new Color(255, 255, 255, imgtransparency));
+			g.drawLine(0, 0, getWidth(), getHeight());
+			g.setColor(new Color(255, 255, 255, polTransparency));
+			g.fillPolygon(new int[]{0,polX,getWidth(),getWidth(),getWidth()-polX,0}, new int[]{0,0,getHeight()-polX,getHeight(),getHeight(),polY}, 6);
         }
+		if(screen == CHARSELECT){
+			if(fadeLIGHT > 0){
+				fadeLIGHT -= 5;
+			}
+			if(fadeINCHAR < 255){
+				fadeINCHAR += 5;
+			}
+			else if(charTransparency < 200){
+				charTransparency += 10;
+				charX += 5;
+				charY += 20;
+			}
+			g.setColor(new Color(255, 255, 255, fadeLIGHT));
+			g.fillRect(0, 0, getWidth(), getHeight());
+			g.setColor(new Color(150, 0, 0, fadeINCHAR));
+			g.fillRect(0, 0, getWidth(), getHeight());
+			g.setColor(new Color(10, 10, 10, charTransparency));
+			g.fillPolygon(new int[]{25,125-charX,1550,1450+charX}, new int[]{650,650-charY,600,600+charY}, 4);
+		}
     }
 }
