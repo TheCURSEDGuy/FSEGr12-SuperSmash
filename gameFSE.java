@@ -2,8 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Observer;
-
 import javax.swing.*;
 
 public class gameFSE extends JFrame{
@@ -47,6 +45,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	int charX = 0;
 	int charY = 0;
 	int charTransparency = 0;
+	boolean charSel = false;
 	
 	private boolean []keys;
 	Timer timer;
@@ -164,14 +163,11 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				imgtransparency += 15;
 			}
 			else if(START && imgtransparency >= 255 && polX <= getWidth() && polY <= getHeight()){
-				System.out.println(polX + " " + polY);
 				polTransparency = 255;
 				polX += 50;
 				polY += 50;
 			}
 			else if(START){
-				System.out.println(screen);
-				System.out.println("WTF");
 				txtX = -400;
 				txtTransparency = 0;
 				imgtransparency = 0;
@@ -211,14 +207,30 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				charTransparency += 10;
 				charX += 5;
 				charY += 20;
+				if(charTransparency > 200){
+					charTransparency = 200;
+				}
+			}
+			else{
+				charSel = true;
 			}
 			g.setColor(new Color(255, 255, 255, fadeLIGHT));
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(new Color(150, 0, 0, fadeINCHAR));
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(new Color(10, 10, 10, charTransparency));
-			g.fillPolygon(new int[]{25,125-charX,1550,1450+charX}, new int[]{650,650-charY,600,600+charY}, 4);
-			System.out.println("HELLO");
+			g.fillPolygon(new int[]{25,125-charX,1550,1450+charX}, new int[]{900,900-charY,500,500+charY}, 4);
+			if(charSel){
+				for(int i = 0; i < 4; i++){
+					g.setColor(new Color(255, 255, 255, 100));
+					g.fillPolygon(new int[]{100+300*i,300+300*i,500+300*i,300+300*i}, new int[]{600,800,800,600}, 4);
+				}
+				// g.setColor(Color.gray);
+				// g.fillPolygon(new int[]{100,300,500,300}, new int[]{100,100,400,400}, 4);
+				// g.setColor(Color.black);
+				// g.fillPolygon(new int[]{150,250,400,200}, new int[]{100,100,400,400}, 4);
+				System.out.println("WHAT");
+			}
 		}
     }
 }
