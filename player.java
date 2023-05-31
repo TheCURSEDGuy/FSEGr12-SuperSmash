@@ -8,33 +8,55 @@ public class player {
         public int x,y,xVel,yVel;
         private int player;
         private boolean left,right,up,down;
-        public final int P1 = 0, P2 = 1;
+        public final boolean P1 = true, P2 = false;
         public final int LEFT = 0, RIGHT = 1, UP = 2, NONE = 3;
 
-        public player(int x, int y, int player){
-                this.x = x;
-                this.y = y;
+        public player(int player){
+                x = player == 1 ? 200 : 1300;
+                y = 700;
                 this.player = player;
         }
 
         public void move(boolean keys[]){
-                if(keys[KeyEvent.VK_D]){
-                        xVel += 2;
+                if(player == 1){
+                        if(keys[KeyEvent.VK_D]){
+                                xVel += 2;
+                        }
+                        if(keys[KeyEvent.VK_A]){
+                                xVel -= 2;
+                        }
+        
+                        if(keys[KeyEvent.VK_W] && jumped == false){
+                                jumped = true;
+                                yVel -= 15;
+                        }
+                        if(xVel > 10){xVel = 10;}
+                        if(xVel < -10){xVel = -10;}
+                
+                        x += xVel;
+                        y += yVel;
                 }
-                if(keys[KeyEvent.VK_A]){
-                        xVel -= 2;
-                }
-
-                if(keys[KeyEvent.VK_W] && jumped == false){
-                        jumped = true;
-                        yVel -= 15;
+                if(player == 2){
+                        if(keys[KeyEvent.VK_RIGHT]){
+                                xVel += 2;
+                        }
+                        if(keys[KeyEvent.VK_LEFT]){
+                                xVel -= 2;
+                        }
+        
+                        if(keys[KeyEvent.VK_UP] && jumped == false){
+                                jumped = true;
+                                yVel -= 15;
+                        }
+                        if(xVel > 10){xVel = 10;}
+                        if(xVel < -10){xVel = -10;}
+                
+                        x += xVel;
+                        y += yVel;
                 }
                 
-                if(xVel > 10){xVel = 10;}
-                if(xVel < -10){xVel = -10;}
                 
-                x += xVel;
-                y += yVel;
+                
         }
         
         public void friction(){

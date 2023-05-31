@@ -48,7 +48,8 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	boolean charSel = false;
 
 	//OBJECTS
-	player p1 = new player(100,100,0);
+	player p1 = new player(1);
+	player p2 = new player(2);
 	Rectangle plat;
 	healthBar h1 = new healthBar(0,0,3);
 	healthBar h2 = new healthBar(1,0,3);
@@ -111,6 +112,20 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			}
 			p1.friction();
 			p1.update();
+
+			if(p2.getRect().intersects(plat)){
+				p2.yVel = 0;
+				p2.y = plat.y - p2.getRect().height+1;
+				p2.jumped = false;
+			}
+			else{
+				p2.yVel += 1;
+			}
+			if(screen == GAME){
+				p2.move(keys);
+			}
+			p2.friction();
+			p2.update();
 
 		}
 
@@ -274,6 +289,8 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		g.setColor(Color.green);
 		// g.fillRect(plat.x, plat.y, plat.width, plat.height);
 		p1.draw(g);
+		p2.draw(g);
+		System.out.println(p2.getRect());
 		h1.draw(g);
 		h2.draw(g);
 		
