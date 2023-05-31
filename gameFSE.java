@@ -22,11 +22,11 @@ public class gameFSE extends JFrame{
 }
 
 class GamePanel extends JPanel implements KeyListener, ActionListener, MouseListener{
-    private final int INTRO = 0, CHARSELECT = 1, GAME = 2, END = 3;
-	private int screen = INTRO;
-    private boolean text1 = true;
-    private boolean text2 = false;
-    int frameCnt = 0;
+    	private final int INTRO = 0, CHARSELECT = 1, GAME = 2, END = 3;
+	private int screen = GAME;
+    	private boolean text1 = true;
+    	private boolean text2 = false;
+    	int frameCnt = 0;
 	Font fontLocal=null, fontSys=null, fontLocal2 = null;
 
 	// INTRO
@@ -46,16 +46,27 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	int charY = 0;
 	int charTransparency = 0;
 	boolean charSel = false;
+
+	//OBJECTS
+	player p1 = new player(100,100,0);
+	Rectangle plat;
+	healthBar h1 = new healthBar(0,0,3);
+	healthBar h2 = new healthBar(1,0,3);
 	
+	// KEYS
 	private boolean []keys;
 	Timer timer;
 	Image back;
+	Image platf;
 	
 	public GamePanel(){
+		back = new ImageIcon("Pics/background.gif").getImage();
+		platf = new ImageIcon("Pics/platform.png").getImage();
+		plat = new Rectangle(100,600,1400,200);
 		keys = new boolean[KeyEvent.KEY_LAST+1];
 
         String fName = "TITLEFONT.ttf";
-		String fName2 = "SUBTITLEFONT.otf";
+	String fName2 = "SUBTITLEFONT.otf";
     	InputStream is = GamePanel.class.getResourceAsStream(fName);
 		InputStream is2 = GamePanel.class.getResourceAsStream(fName2);
     	try{
@@ -87,13 +98,28 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			
 		}
 		else if(screen == GAME){
-			
+			if(p1.getRect().intersects(plat)){
+				p1.yVel = 0;
+				p1.y = plat.y - p1.getRect().height+1;
+				p1.jumped = false;
+			}
+			else{
+				p1.yVel += 1;
+			}
+			if(screen == GAME){
+				p1.move(keys);
+			}
+			p1.friction();
+			p1.update();
+
 		}
 
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e){
+		// Point mouse = MouseInfo.getPointerInfo().getLocation();
+		// Point offset = getLocationOnScreen();
 		move(); // never draw in move
 		repaint(); // only draw
 		//Graphics gg = getGraphics();
@@ -119,12 +145,17 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		}
 		
 		
+		
 	}
 	
 	@Override
 	public void keyTyped(KeyEvent ke){}
 	@Override
-	public void	mouseClicked(MouseEvent e){}
+	public void	mouseClicked(MouseEvent e){
+		if(charSel){
+			screen = GAME;
+		}
+	}
 
 	@Override
 	public void	mouseEntered(MouseEvent e){}
@@ -135,12 +166,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	@Override
 	public void	mousePressed(MouseEvent e){
 		if(screen == INTRO){
-            repaint();
+            		repaint();
 		}
-        if(screen == GAME){
-            move();
-            repaint();
-        }	
+        	if(screen == GAME){
+            		move();
+            		repaint();
+        	}	
 	}
 
 	@Override
@@ -149,7 +180,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	@Override
 	public void paint(Graphics g){
 		if(screen == INTRO){
-			System.out.println(START);
 			if(txtX < 400){
 				txtX += 50;	
 			}
@@ -181,6 +211,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				charX = 0;
 				charY = 0;
 				charTransparency = 0;
+				charSel = false;
 
 				screen = CHARSELECT;
 			}
@@ -230,7 +261,22 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				// g.setColor(Color.black);
 				// g.fillPolygon(new int[]{150,250,400,200}, new int[]{100,100,400,400}, 4);
 				System.out.println("WHAT");
+				g.fillRect(400,400,100,100);
+
 			}
+
+
 		}
+	if(screen == GAME){
+		g.drawImage(back, -330, 0, back.getWidth(this)*3, back.getHeight(this)*3, this);
+		g.drawImage(platf, plat.x-20, plat.y-30, plat.width, plat.height+100, this);
+		System.out.println(back.getWidth(this)+ " " + back.getHeight(this));
+		g.setColor(Color.green);
+		// g.fillRect(plat.x, plat.y, plat.width, plat.height);
+		p1.draw(g);
+		h1.draw(g);
+		h2.draw(g);
+		
+	}
     }
 }
