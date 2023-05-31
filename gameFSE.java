@@ -51,8 +51,9 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	player p1 = new player(1);
 	player p2 = new player(2);
 	Rectangle plat;
-	healthBar h1 = new healthBar(0,0,3);
-	healthBar h2 = new healthBar(1,0,3);
+	Rectangle[] plats;
+	healthBar h1 = new healthBar(0);
+	healthBar h2 = new healthBar(1);
 	
 	// KEYS
 	private boolean []keys;
@@ -61,6 +62,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	Image platf;
 	
 	public GamePanel(){
+		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
 		back = new ImageIcon("Pics/background.gif").getImage();
 		platf = new ImageIcon("Pics/platform.png").getImage();
 		plat = new Rectangle(100,600,1400,200);
@@ -99,31 +101,13 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			
 		}
 		else if(screen == GAME){
-			if(p1.getRect().intersects(plat)){
-				p1.yVel = 0;
-				p1.y = plat.y - p1.getRect().height+1;
-				p1.jumped = false;
-			}
-			else{
-				p1.yVel += 1;
-			}
-			if(screen == GAME){
-				p1.move(keys);
-			}
+			p1.gravity(plat);
+			p1.move(keys);
 			p1.friction();
 			p1.update();
 
-			if(p2.getRect().intersects(plat)){
-				p2.yVel = 0;
-				p2.y = plat.y - p2.getRect().height+1;
-				p2.jumped = false;
-			}
-			else{
-				p2.yVel += 1;
-			}
-			if(screen == GAME){
-				p2.move(keys);
-			}
+			p2.gravity(plat);
+			p2.move(keys);
 			p2.friction();
 			p2.update();
 
@@ -285,14 +269,18 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	if(screen == GAME){
 		g.drawImage(back, -330, 0, back.getWidth(this)*3, back.getHeight(this)*3, this);
 		g.drawImage(platf, plat.x-20, plat.y-30, plat.width, plat.height+100, this);
-		System.out.println(back.getWidth(this)+ " " + back.getHeight(this));
 		g.setColor(Color.green);
 		// g.fillRect(plat.x, plat.y, plat.width, plat.height);
 		p1.draw(g);
 		p2.draw(g);
-		System.out.println(p2.getRect());
 		h1.draw(g);
 		h2.draw(g);
+
+		for(Rectangle r:plats){
+			g.setColor(Color.green);
+			g.fillRect(r.x, r.y, r.width, r.height);
+			
+		}
 		
 	}
     }

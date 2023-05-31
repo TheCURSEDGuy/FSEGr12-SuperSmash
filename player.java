@@ -7,6 +7,7 @@ public class player {
         public boolean jumped = false;
         public int x,y,xVel,yVel;
         private int player;
+        public int percentage;
         private boolean left,right,up,down;
         public final boolean P1 = true, P2 = false;
         public final int LEFT = 0, RIGHT = 1, UP = 2, NONE = 3;
@@ -58,6 +59,10 @@ public class player {
                 
                 
         }
+
+        public void punch(){
+
+        }
         
         public void friction(){
                 if(xVel > 0){
@@ -65,6 +70,17 @@ public class player {
                 }
                 else if(xVel < 0){
                         xVel += 1;
+                }
+        }
+
+        public void gravity(Rectangle plat){
+                if(getRect().intersects(plat)){
+                        yVel = 0;
+                        y = plat.y - getRect().height+1;
+                        jumped = false;
+                }
+                else{
+                        yVel += 1;
                 }
         }
 
