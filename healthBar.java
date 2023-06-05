@@ -6,13 +6,14 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 
 public class healthBar {
-        Font fontSys = new Font("Comic Sans MS",Font.PLAIN,32);;
+        Font fontSys = new Font("Arial", Font.BOLD, 50);
         Image heart = new ImageIcon("Pics/hearts.png").getImage();
         public final int LEFT = 0, RIGHT = 1;
         private int dir;
-        private int percentage = 0;
+        private double percentage = 0;
         private int hearts = 3;
         private int x,y;
+        private int xPer;
         private int xHearts;
         Image health;
 
@@ -22,7 +23,8 @@ public class healthBar {
                 y = 700;
                 
                 health = dir == LEFT ? new ImageIcon("Pics/healthLeft.png").getImage() : new ImageIcon("Pics/healthRight.png").getImage();
-                x = dir == LEFT ? 0 : 1600-health.getWidth(null)-15;
+                xPer = dir == LEFT ? 250 : 1180;
+                x = dir == LEFT ? 0 : 1600-health.getWidth(null);
                 xHearts = dir == LEFT ? 150 : 1600-health.getWidth(null)+200;
 
 
@@ -36,7 +38,8 @@ public class healthBar {
                 g.setColor(Color.red);
                 g.drawImage(health, x, y, null);
                 g.setFont(fontSys);
-                g.drawString(percentage+"%", x+health.getWidth(null)/2-20, y+health.getHeight(null)/2+10);
+                g.setColor(new Color((int)(255-255*(percentage/1000)),0,0));
+                g.drawString(percentage+"%", xPer, 850);
                 for(int i = 0; i < hearts; i++){
                         g.drawImage(heart, xHearts+i*40, 922, null);
                         
