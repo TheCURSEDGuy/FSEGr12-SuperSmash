@@ -49,7 +49,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
 	//OBJECTS
 	player p1 = new player(1);
-	player p2 = new player(2);
+	player p2 = new player(-1);
 	Rectangle plat;
 	Rectangle[] plats;
 	healthBar h1 = new healthBar(0);
@@ -74,7 +74,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		InputStream is2 = GamePanel.class.getResourceAsStream(fName2);
     	try{
     		fontLocal = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(200f);
-			fontLocal2 = Font.createFont(Font.TRUETYPE_FONT, is2).deriveFont(30f);
+		fontLocal2 = Font.createFont(Font.TRUETYPE_FONT, is2).deriveFont(30f);
     	}
     	catch(IOException ex){
     		System.out.println(ex);	
@@ -141,16 +141,25 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(key == KeyEvent.VK_ESCAPE){
 				screen = INTRO;
 			}
+			
 		}
-		
-		
-		
+		if(screen == GAME){
+			if(key == KeyEvent.VK_Q){
+				p1.punch(p2);
+			}
+			if(key == KeyEvent.VK_COMMA){
+				p2.punch(p1);
+			}
+			h1.update(p1.percentage);
+			h2.update(p2.percentage);
+			
+		}
 	}
 	
 	@Override
 	public void keyTyped(KeyEvent ke){}
 	@Override
-	public void	mouseClicked(MouseEvent e){
+	public void mouseClicked(MouseEvent e){
 		if(charSel){
 			screen = GAME;
 		}
@@ -259,7 +268,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				// g.fillPolygon(new int[]{100,300,500,300}, new int[]{100,100,400,400}, 4);
 				// g.setColor(Color.black);
 				// g.fillPolygon(new int[]{150,250,400,200}, new int[]{100,100,400,400}, 4);
-				System.out.println("WHAT");
 				g.fillRect(400,400,100,100);
 
 			}
