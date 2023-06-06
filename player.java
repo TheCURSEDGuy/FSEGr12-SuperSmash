@@ -9,7 +9,17 @@ public class player {
         public double xVel,yVel;
         private int player;
         public int percentage;
-        private boolean left,right,up,down;
+        private int dir;
+        private boolean cooldownPunch = false;
+        Rectangle playerRect;
+
+        // Timers
+        timer pT1 = new timer(500);
+        timer pT2 = new timer(500);
+        timer nPunch;
+
+        // finals
+        public final int LEFT = -1, RIGHT = 1, UP = 2, NONE = 3;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 1, poweredP = 5;
 
@@ -91,8 +101,19 @@ public class player {
                 }
         }
 
-        public void punch(){
-
+        public void punched(int dir, int dist){
+                if(player == 1){
+                        pT1.reset();
+                }
+                else{
+                        pT2.reset();
+                }
+                percentage+=1;
+                System.out.println(dist*dir*percentage/50);
+                xVel += dist*dir*percentage/50;
+                yVel -= 10;
+                isPunched = true;
+                percentage+=10;
         }
         
         public void friction(){
@@ -105,10 +126,13 @@ public class player {
         }
 
         public void gravity(Rectangle plat){
-                if(getRect().intersects(plat)){
-                        yVel = 0;
+                if(getRect().intersects(plat) && !isPunched){
+                        if(!isPunched){
+                                yVel = 0;
+                        }
                         y = plat.y - getRect().height+1;
                         jumped = false;
+
                 }
                 else{
                         yVel += 1;
