@@ -268,6 +268,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				// g.fillPolygon(new int[]{100,300,500,300}, new int[]{100,100,400,400}, 4);
 				// g.setColor(Color.black);
 				// g.fillPolygon(new int[]{150,250,400,200}, new int[]{100,100,400,400}, 4);
+
 				g.fillRect(400,400,100,100);
 
 			}
