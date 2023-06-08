@@ -48,8 +48,8 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	boolean charSel = false;
 
 	//OBJECTS
-	player p1 = new player(1);
-	player p2 = new player(-1);
+	player p1 = new player(1, "luffy");
+	player p2 = new player(-1, "ichigo");
 	Rectangle plat;
 	Rectangle[] plats;
 	healthBar h1 = new healthBar(0);
@@ -102,12 +102,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		}
 		else if(screen == GAME){
 			p1.gravity(plat);
-			p1.move(keys);
+			p1.move(keys, p1, p2);
 			p1.friction();
 			p1.update();
 
 			p2.gravity(plat);
-			p2.move(keys);
+			p2.move(keys, p1, p2);
 			p2.friction();
 			p2.update();
 
