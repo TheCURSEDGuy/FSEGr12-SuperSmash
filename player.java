@@ -23,16 +23,19 @@ public class player {
         boolean idle = true;
         public boolean jumped = false;
         public boolean walk;
+        private boolean punching = false;
 
 
         // Timers
         timer pT = new timer(500);
         timer nPunch;
+        timer cDown = new timer(1000);
 
         // finals
         public final int LEFT = -1, RIGHT = 1, UP = 2, NONE = 3;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
+        private final int WAIT = 4;
 
         // attacks
         private int typePunch = normalP;
@@ -42,6 +45,7 @@ public class player {
         // cooldowns
         private timer cooldownP = new timer(1000);
         private timer cooldownBet = new timer(1000);
+        private int cooldown = 0;
 
         // sprites
         Image[] attack1;
@@ -51,6 +55,7 @@ public class player {
         Image[] run;
         Image[] stand;
         Image[] ult;
+        Image[] hit;
 
         
 
@@ -63,6 +68,7 @@ public class player {
                 run = new Image[new File("Pics/" + playerName + "/run").listFiles().length];
                 stand = new Image[new File("Pics/" + playerName + "/stand").listFiles().length];
                 ult = new Image[new File("Pics/" + playerName + "/ult").listFiles().length];
+                hit = new Image[new File("Pics/" + playerName + "/hit").listFiles().length];
 
                 for(int i = 0; i < attack1.length; i++){
                         attack1[i] = new ImageIcon("Pics/" + playerName + "/attack1/" + i + ".png").getImage();
@@ -85,6 +91,9 @@ public class player {
                 for(int i = 0; i < ult.length; i++){
                         ult[i] = new ImageIcon("Pics/" + playerName + "/ult/" + i + ".png").getImage();
                 }
+                for(int i = 0; i < hit.length; i++){
+                        hit[i] = new ImageIcon("Pics/" + playerName + "/hit/" + i + ".png").getImage();
+                }
 
 
                 
@@ -92,7 +101,8 @@ public class player {
 
                 x = player == 1 ? 200 : 1300;
                 y = 700;
-                playerRect = new Rectangle(x,y,40,80);
+                playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
+                System.out.println(playerRect.width + " " + playerRect.height);
                 this.player = player;
                 dir = player == 1 ? RIGHT : LEFT;
 
@@ -107,25 +117,16 @@ public class player {
                         if(keys[KeyEvent.VK_D]){
                                 dir = RIGHT;
                                 xVel += 2;
-                                walk = true;
                         }
                         if(keys[KeyEvent.VK_A]){
                                 dir = LEFT;
-                                xVel -= 2;
-                                walk = true;
+                                xVel -= 30;
                         }
         
                         if(keys[KeyEvent.VK_W] && jumped == false){
                                 jumped = true;
                                 yVel -= 15;
                         }
-                        if(xVel > 10 && !isPunched){xVel = 10;}
-                        if(xVel < -10 && !isPunched){xVel = -10;}
-                        if(pT.getTime() > 10 && isPunched){isPunched = false;}
-                        if(xVel == 0 && yVel == 0 && !p2.isPunched){idle = true; walk = false; frame = 0;}
-                        else{idle = false; walk = true; frame = 0;}
-                        x += xVel;
-                        y += yVel;
                 }
                 if(player == -1){
                         if(keys[KeyEvent.VK_RIGHT]){
@@ -141,30 +142,44 @@ public class player {
                                 jumped = true;
                                 yVel -= 15;
                         }
-
-                        if(xVel > 10 && !isPunched){xVel = 10;}
-                        if(xVel < -10 && !isPunched){xVel = -10;}
-                        if(pT.getTime() > 10 && isPunched){isPunched = false;}
-                        if(xVel == 0 && yVel == 0 && !p2.isPunched){idle = true; walk = false; frame = 0;}
-                        else{idle = false; walk = true; frame = 0;}
-
-                        x += xVel;
-                        y += yVel;
                 }
-                playerRect = new Rectangle(x,y,40,80);
+                if(xVel > 10 && !isPunched){xVel = 10;}
+                if(xVel < -10 && !isPunched){xVel = -10;}
+                if(pT.getTime() > 10 && isPunched){isPunched = false;}
+                if(xVel == 0 && yVel == 0 && !p2.isPunched && !punching){idle = true; walk = false;}
+                else if(!isPunched && !punching){idle = false; walk = true;}
+                if(isPunched){idle = false; walk = false;}
+                if(xVel%1 != 0 && xVel > -1 && xVel < 1){xVel = 0;}
+                x += xVel;
+                y += yVel;
+                playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
+
         }
 
         public void punch(player p){
+                if(cooldownBet.getTime() > 10){
+                        frame = 0;
+                        punching = true;
+                        idle = false;
+                        walk = false;
+                        cooldownBet.reset();
+                }
+                
                 if(p.getRect().intersects(getRect()) && !isPunched){
-                        if(numPunches == 10){
-                                p.punched(dir, poweredP, numPunches);
+                        if(cDown.getTime() >= 30){
+                                cDown.reset();
+                                numPunches = 0;
+                        }
+                        if(numPunches == 9){
+                                p.punched(dir, poweredP, numPunches+1);
                                 typePunch = poweredP;
                                 numPunches = 0;
                                 cooldownP.reset(); 
                                 cooldownBet.reset();
                        }
                         else if(cooldownP.getTime() > 30 && cooldownBet.getTime() > 10){
-                                p.punched(dir, 1,numPunches);
+                                cDown.reset();
+                                p.punched(dir, 1,numPunches+1);
                                 cooldownBet.reset();                                
                         }
                         numPunches++;
@@ -174,27 +189,35 @@ public class player {
 
         public void punched(double dir, double dist, int numPunches) {
                 double yDist = 0;
-                double knockbackScaling = 0.08; // Adjust this value to control knockback scaling
+                double knockbackScaling = 0.03; // Adjust this value to control knockback scaling
             
                 if (player == 1) {
                     pT.reset();
                 } else {
                     pT.reset();
                 }
-            
-                if (numPunches > 3 && x < 9) {
+                
+                if(numPunches == 1){
+
+                        yDist = 5;
+                }
+                if (numPunches > 1 && numPunches < 9) {
                     dist = 1;
-                    yDist = 0.01;
-                } else {
+                    yDist = 5;
+                } 
+                else if(numPunches == 10){
                     yDist = 10;
+                    dist = 10;
                 }
             
-                percentage += 1;
                 double knockback = (dist * (percentage / 100.0) * dir) * knockbackScaling;
                 xVel += knockback;
                 yVel -= yDist;
                 isPunched = true;
                 percentage += 1 * dist;
+                // Increase percentage based on the magnitude of the knockback
+                double percentageIncrement = Math.abs(knockback) * 0.1; // Adjust the scaling factor as needed
+                percentage += percentageIncrement;
             }
         
         public void friction(){
@@ -211,7 +234,7 @@ public class player {
                         if(!isPunched){
                                 yVel = 0;
                         }
-                        y = plat.y - getRect().height+1;
+                        y = plat.y - getRect().height+5;
                         jumped = false;
 
                 }
@@ -229,40 +252,80 @@ public class player {
                 return playerRect;
         }
 
-        public void moveIdle(){
-                if(frame > stand.length-2){frame = 0;}
-                else{frame++;}
-        }
-
-        public void moveRun(){
-                if(frame > run.length-1){frame = 0;}
-                else{frame++;}
+        public void move(Image[] move){
+                if(cooldown % WAIT == 0){
+                        frame++;
+                        if(frame >= move.length){
+                                frame = 0;
+                        }
+                }
         }
         
+        public void hit(){
+                if(cooldown % WAIT == 0){
+                        frame++;
+                        if(frame >= hit.length){
+                                frame = hit.length-1;
+                        }
+                }
+        }
+
+        public void punch(){
+                if(cooldown % WAIT == 0){
+                        System.out.println(frame);
+                        frame++;
+                        if(frame >= punch.length){
+                                punching = false;
+                        }
+                }
+        }
+
         public void draw(Graphics g) {
-                System.out.println(walk + " " + playerName);
                 g.setColor(Color.red);
+                cooldown++;
                 if (idle) {
-                        moveIdle();
+                        move(stand);
                         if (dir == RIGHT){
-                        g.drawImage(stand[frame], x, y, null);
+                                g.drawImage(stand[frame], x, y, null);
                         } 
                         else{
                                 Graphics2D g2d = (Graphics2D) g;
                                 g2d.drawImage(stand[frame], x + stand[frame].getWidth(null), y, -stand[frame].getWidth(null), stand[frame].getHeight(null), null);
                         }
                 }
-                else if(jumped){
+                else if(punching){
+                        System.out.println(frame);
+                        punch();
                         if (dir == RIGHT){
-                                g.drawImage(jump[0], x, y, null);
+                                g.drawImage(punch[frame], x, y, null);
                         } 
                         else{
                                 Graphics2D g2d = (Graphics2D) g;
-                                g2d.drawImage(jump[0], x + jump[0].getWidth(null), y, -jump[0].getWidth(null), jump[0].getHeight(null), null);
+                                g2d.drawImage(punch[frame], x + punch[frame].getWidth(null), y, -punch[frame].getWidth(null), punch[frame].getHeight(null), null);
+                        }
+                }
+                else if(isPunched){
+                        hit();
+                        if (dir == RIGHT){
+                                g.drawImage(hit[frame], x, y, null);
+                        } 
+                        else{
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.drawImage(hit[frame], x + hit[frame].getWidth(null), y, -hit[frame].getWidth(null), hit[frame].getHeight(null), null);
+                        }
+                }
+                else if(jumped){
+                        move(jump);
+                        if (dir == RIGHT){
+                                g.drawImage(jump[frame], x, y, null);
+                        } 
+                        else{
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.drawImage(jump[frame], x + jump[frame].getWidth(null), y, -jump[frame].getWidth(null), jump[frame].getHeight(null), null);
                         }
                 }
                 else if(walk){
-                        moveRun();
+                        move(run);
                         if (dir == RIGHT){
                                 g.drawImage(run[frame], x, y, null);
                         } 
@@ -271,6 +334,7 @@ public class player {
                                 g2d.drawImage(run[frame], x + run[frame].getWidth(null), y, -run[frame].getWidth(null), run[frame].getHeight(null), null);
                         }
                 }
+                
                 
         }
 

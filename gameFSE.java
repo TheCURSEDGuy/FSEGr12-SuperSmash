@@ -83,7 +83,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
     		System.out.println(ex);	
     	}
 	
-    	fontSys = new Font("Comic Sans MS",Font.PLAIN,32);
+    		fontSys = new Font("Comic Sans MS",Font.PLAIN,32);
 		setSize(800,600);
 		
 		setPreferredSize(new Dimension(800, 600));
@@ -92,7 +92,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		requestFocus();
 		addKeyListener(this);
 		addMouseListener(this);
-		timer = new Timer(20, this);
+		timer = new Timer(40, this);
 		timer.start();
 	}
 
@@ -276,6 +276,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
 		}
 	if(screen == GAME){
+		
 		g.drawImage(back, -330, 0, back.getWidth(this)*3, back.getHeight(this)*3, this);
 		g.drawImage(platf, plat.x-20, plat.y-30, plat.width, plat.height+100, this);
 		g.setColor(Color.green);
