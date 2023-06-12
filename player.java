@@ -13,7 +13,7 @@ public class player {
         public double xVel,yVel;
         private int player;
         public int percentage;
-        private int dir;
+        public int dir;
         Rectangle playerRect;
         String playerName;
         int frame = 0;
@@ -220,6 +220,41 @@ public class player {
                 percentage += percentageIncrement;
             }
         
+        public void punchedHarder(double dir){
+            
+                if (player == 1) {
+                    pT.reset();
+                } else {
+                    pT.reset();
+                }
+                
+                double knockback = 15;
+                xVel += knockback;
+                isPunched = true;
+                percentage += 20;
+        }
+
+        public void kick(){
+                if (player == 1) {
+                        pT.reset();
+                } else {
+                        pT.reset();
+                }
+
+                yVel -= 15;
+                isPunched = true;
+                percentage += 10;
+        }
+
+        public void dash(){
+                if(dir == RIGHT){
+                        x += 8;
+                }
+                else{
+                        x -= 8;
+                }
+        }
+        
         public void friction(){
                 if(xVel > 0){
                         xVel -= 1;
@@ -337,6 +372,4 @@ public class player {
                 
                 
         }
-
-        
 }
