@@ -17,13 +17,7 @@ public class player {
         Rectangle playerRect;
         String playerName;
         int frame = 0;
-
-        // Booleans
-        boolean combo = false;
-        boolean idle = true;
-        public boolean jumped = false;
-        public boolean walk;
-        private boolean punching = false;
+        public int status;
 
 
         // Timers
@@ -33,9 +27,10 @@ public class player {
 
         // finals
         public final int LEFT = -1, RIGHT = 1, UP = 2, NONE = 3;
+        public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
-        private final int WAIT = 4;
+        private final int WAIT = 8;
 
         // attacks
         private int typePunch = normalP;
@@ -102,7 +97,6 @@ public class player {
                 x = player == 1 ? 200 : 1300;
                 y = 700;
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
-                System.out.println(playerRect.width + " " + playerRect.height);
                 this.player = player;
                 dir = player == 1 ? RIGHT : LEFT;
 
@@ -113,7 +107,7 @@ public class player {
                 cooldownP.update();
                 cooldownBet.update();
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
-                if(player == 1){
+                if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
                                 dir = RIGHT;
                                 xVel += 2;
@@ -123,12 +117,13 @@ public class player {
                                 xVel -= 30;
                         }
         
-                        if(keys[KeyEvent.VK_W] && jumped == false){
-                                jumped = true;
+                        if(keys[KeyEvent.VK_W] && status != JUMP){
+                                frame = 0;
+                                status = JUMP;
                                 yVel -= 15;
                         }
                 }
-                if(player == -1){
+                if(player == -1 && status != HIT){
                         if(keys[KeyEvent.VK_RIGHT]){
                                 dir = RIGHT;
                                 xVel += 2;
@@ -138,17 +133,17 @@ public class player {
                                 xVel -= 2;
                         }
         
-                        if(keys[KeyEvent.VK_UP] && jumped == false){
-                                jumped = true;
+                        if(keys[KeyEvent.VK_UP] && status != JUMP){
+                                frame = 0;
+                                status = JUMP;
                                 yVel -= 15;
                         }
                 }
-                if(xVel > 10 && !isPunched){xVel = 10;}
+                if(xVel > 10 && status != HIT){xVel = 10;}
                 if(xVel < -10 && !isPunched){xVel = -10;}
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
-                if(xVel == 0 && yVel == 0 && !p2.isPunched && !punching){idle = true; walk = false;}
-                else if(!isPunched && !punching){idle = false; walk = true;}
-                if(isPunched){idle = false; walk = false;}
+                if(xVel == 0 && yVel == 0 && !p2.isPunched && status != PUNCH && status != JUMP){status = IDLE; frame = 0;}
+                else if(status != PUNCH && status != JUMP && status != PUNCH){status = WALK; frame = 0;}
                 if(xVel%1 != 0 && xVel > -1 && xVel < 1){xVel = 0;}
                 x += xVel;
                 y += yVel;
@@ -159,13 +154,12 @@ public class player {
         public void punch(player p){
                 if(cooldownBet.getTime() > 10){
                         frame = 0;
-                        punching = true;
-                        idle = false;
-                        walk = false;
+                        status = PUNCH;
                         cooldownBet.reset();
                 }
                 
-                if(p.getRect().intersects(getRect()) && !isPunched){
+                if(p.getRect().intersects(getRect()) && status != HIT){
+                        System.out.println("PUNCH");
                         if(cDown.getTime() >= 30){
                                 cDown.reset();
                                 numPunches = 0;
@@ -188,6 +182,7 @@ public class player {
         }
 
         public void punched(double dir, double dist, int numPunches) {
+                System.out.println("WAS PUNCHED");
                 double yDist = 0;
                 double knockbackScaling = 0.03; // Adjust this value to control knockback scaling
             
@@ -235,7 +230,7 @@ public class player {
                                 yVel = 0;
                         }
                         y = plat.y - getRect().height+5;
-                        jumped = false;
+                        status = status != PUNCH ? IDLE : PUNCH;
 
                 }
                 else{
@@ -272,10 +267,9 @@ public class player {
 
         public void punch(){
                 if(cooldown % WAIT == 0){
-                        System.out.println(frame);
                         frame++;
                         if(frame >= punch.length){
-                                punching = false;
+                                status = IDLE;
                         }
                 }
         }
@@ -283,7 +277,7 @@ public class player {
         public void draw(Graphics g) {
                 g.setColor(Color.red);
                 cooldown++;
-                if (idle) {
+                if (status == IDLE) {
                         move(stand);
                         if (dir == RIGHT){
                                 g.drawImage(stand[frame], x, y, null);
@@ -293,8 +287,7 @@ public class player {
                                 g2d.drawImage(stand[frame], x + stand[frame].getWidth(null), y, -stand[frame].getWidth(null), stand[frame].getHeight(null), null);
                         }
                 }
-                else if(punching){
-                        System.out.println(frame);
+                else if(status == PUNCH){
                         punch();
                         if (dir == RIGHT){
                                 g.drawImage(punch[frame], x, y, null);
@@ -314,8 +307,9 @@ public class player {
                                 g2d.drawImage(hit[frame], x + hit[frame].getWidth(null), y, -hit[frame].getWidth(null), hit[frame].getHeight(null), null);
                         }
                 }
-                else if(jumped){
+                else if(status == JUMP){
                         move(jump);
+                        System.out.println(frame + " " + jump.length);
                         if (dir == RIGHT){
                                 g.drawImage(jump[frame], x, y, null);
                         } 
@@ -324,7 +318,7 @@ public class player {
                                 g2d.drawImage(jump[frame], x + jump[frame].getWidth(null), y, -jump[frame].getWidth(null), jump[frame].getHeight(null), null);
                         }
                 }
-                else if(walk){
+                else if(status == WALK){
                         move(run);
                         if (dir == RIGHT){
                                 g.drawImage(run[frame], x, y, null);
