@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 
 public class player {
         public int x,y;
+        public int speedX = 2;
         public double xVel,yVel;
         private int player;
         public int percentage;
@@ -110,7 +111,7 @@ public class player {
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
                                 dir = RIGHT;
-                                xVel += 2;
+                                xVel += speedX;
                         }
                         if(keys[KeyEvent.VK_A]){
                                 dir = LEFT;
@@ -126,7 +127,7 @@ public class player {
                 if(player == -1 && status != HIT){
                         if(keys[KeyEvent.VK_RIGHT]){
                                 dir = RIGHT;
-                                xVel += 2;
+                                xVel += speedX;
                         }
                         if(keys[KeyEvent.VK_LEFT]){
                                 dir = LEFT;
@@ -184,7 +185,7 @@ public class player {
         public void punched(double dir, double dist, int numPunches) {
                 System.out.println("WAS PUNCHED");
                 double yDist = 0;
-                double knockbackScaling = 0.03; // Adjust this value to control knockback scaling
+                double knockbackScaling = 300.0; // Adjust this value to control knockback scaling
             
                 if (player == 1) {
                     pT.reset();
@@ -228,7 +229,35 @@ public class player {
                 isPunched = true;
                 percentage += 20;
         }
+        public void waterAttacked(double dir){
+            
+                if (player == 1) {
+                    pT.reset();
+                } else {
+                    pT.reset();
+                }
+                
+                double knockback = 15;
+                xVel += knockback;
+                isPunched = true;
+                percentage += 10;
 
+                speedX = 1;
+                //timer needed
+        }
+
+        public void multiHit(){
+                if (player == 1) {
+                        pT.reset();
+                    } else {
+                        pT.reset();
+                    }
+
+                    isPunched = true;
+                    percentage += 1;
+                    speedX = 0;
+                    //timer needed
+        }
         public void kick(){
                 if (player == 1) {
                         pT.reset();

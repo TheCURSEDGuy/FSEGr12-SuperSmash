@@ -111,6 +111,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			p2.friction();
 			p2.update();
 
+			
 		}
 
 	}

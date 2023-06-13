@@ -4,11 +4,22 @@ import java.awt.Rectangle;
 
 public class powerUps {
     public int width, height, player;
+    public boolean waterhit;
+    public timer tW;
 
     public powerUps(int ww, int hh, int pp){
         width = ww;
         height = hh;
         player = pp;
+    }
+
+    public void update(){
+        if(waterhit){
+            tW.update();
+            if(tW.getTime() > 100){
+                waterhit = false;
+            }
+        }
     }
 
     public void multiHit(player bigSpoon, player littleSpoon){
@@ -35,11 +46,15 @@ public class powerUps {
         victim.isPunched = false;
     }
 
-    public void luffyThrow(player luffy, player victim){
+    public void luffyBoulder(player luffy, player victim){
 
     }
 
     public void ichigoDash(player ichigo){
         ichigo.dash();
+    }
+
+    public void waterAttack(player aang, player victim){
+        
     }
 }
