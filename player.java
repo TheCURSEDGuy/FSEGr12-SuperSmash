@@ -19,6 +19,9 @@ public class player {
         int frame = 0;
         public int status;
 
+        // booleans
+        boolean jumped = false;
+
 
         // Timers
         timer pT = new timer(500);
@@ -30,7 +33,7 @@ public class player {
         public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
-        private final int WAIT = 8;
+        private final int WAIT = 4;
 
         // attacks
         private int typePunch = normalP;
@@ -41,6 +44,9 @@ public class player {
         private timer cooldownP = new timer(1000);
         private timer cooldownBet = new timer(1000);
         private int cooldown = 0;
+
+        // health
+        healthBar health;
 
         // sprites
         Image[] attack1;
@@ -90,7 +96,6 @@ public class player {
                         hit[i] = new ImageIcon("Pics/" + playerName + "/hit/" + i + ".png").getImage();
                 }
 
-
                 
                 this.playerName = playerName;
 
@@ -99,6 +104,9 @@ public class player {
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
                 this.player = player;
                 dir = player == 1 ? RIGHT : LEFT;
+                System.out.println(dir);
+                health = new healthBar(dir);
+
 
         }
 
@@ -111,15 +119,20 @@ public class player {
                         if(keys[KeyEvent.VK_D]){
                                 dir = RIGHT;
                                 xVel += 2;
+                                status = status != JUMP && status != HIT ? WALK : JUMP;
+
                         }
                         if(keys[KeyEvent.VK_A]){
                                 dir = LEFT;
                                 xVel -= 30;
+                                status = status != JUMP && status != HIT ? WALK : JUMP;
+
                         }
         
-                        if(keys[KeyEvent.VK_W] && status != JUMP){
+                        if(keys[KeyEvent.VK_W] && !jumped){
                                 frame = 0;
                                 status = JUMP;
+                                jumped = true;
                                 yVel -= 15;
                         }
                 }
@@ -127,27 +140,33 @@ public class player {
                         if(keys[KeyEvent.VK_RIGHT]){
                                 dir = RIGHT;
                                 xVel += 2;
+                                status = status != JUMP && status != HIT ? WALK : JUMP;
+
                         }
                         if(keys[KeyEvent.VK_LEFT]){
                                 dir = LEFT;
                                 xVel -= 2;
+                                status = status != JUMP && status != HIT ? WALK : JUMP;
                         }
         
-                        if(keys[KeyEvent.VK_UP] && status != JUMP){
+                        if(keys[KeyEvent.VK_UP] && !jumped){
                                 frame = 0;
                                 status = JUMP;
+                                jumped = true;
                                 yVel -= 15;
                         }
                 }
                 if(xVel > 10 && status != HIT){xVel = 10;}
-                if(xVel < -10 && !isPunched){xVel = -10;}
-                if(pT.getTime() > 10 && isPunched){isPunched = false;}
-                if(xVel == 0 && yVel == 0 && !p2.isPunched && status != PUNCH && status != JUMP){status = IDLE; frame = 0;}
-                else if(status != PUNCH && status != JUMP && status != PUNCH){status = WALK; frame = 0;}
+                if(xVel < -10 && status != HIT){xVel = -10;}
+                if(pT.getTime() > 10 && status == HIT){status = IDLE; frame = 0;}
+                if(xVel == 0 && yVel == 0 &&  status != HIT && status != PUNCH && status != JUMP && status != IDLE){status = IDLE; frame = 0;}
                 if(xVel%1 != 0 && xVel > -1 && xVel < 1){xVel = 0;}
                 x += xVel;
                 y += yVel;
+                if(x > 1600 && x < 0){respawn();}
+                if(y > 1000){respawn();}
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
+                health.update(percentage);
 
         }
 
@@ -157,13 +176,12 @@ public class player {
                         status = PUNCH;
                         cooldownBet.reset();
                 }
+                if(cDown.getTime() >= 30){
+                        cDown.reset();
+                        numPunches = 0;
+                }
                 
                 if(p.getRect().intersects(getRect()) && status != HIT){
-                        System.out.println("PUNCH");
-                        if(cDown.getTime() >= 30){
-                                cDown.reset();
-                                numPunches = 0;
-                        }
                         if(numPunches == 9){
                                 p.punched(dir, poweredP, numPunches+1);
                                 typePunch = poweredP;
@@ -171,8 +189,8 @@ public class player {
                                 cooldownP.reset(); 
                                 cooldownBet.reset();
                        }
-                        else if(cooldownP.getTime() > 30 && cooldownBet.getTime() > 10){
-                                cDown.reset();
+                        else if(cooldownP.getTime() > 30){
+                                cooldownP.reset();
                                 p.punched(dir, 1,numPunches+1);
                                 cooldownBet.reset();                                
                         }
@@ -182,7 +200,6 @@ public class player {
         }
 
         public void punched(double dir, double dist, int numPunches) {
-                System.out.println("WAS PUNCHED");
                 double yDist = 0;
                 double knockbackScaling = 0.03; // Adjust this value to control knockback scaling
             
@@ -208,12 +225,26 @@ public class player {
                 double knockback = (dist * (percentage / 100.0) * dir) * knockbackScaling;
                 xVel += knockback;
                 yVel -= yDist;
-                isPunched = true;
+                frame = 0;
+                status = HIT;
                 percentage += 1 * dist;
-                // Increase percentage based on the magnitude of the knockback
-                double percentageIncrement = Math.abs(knockback) * 0.1; // Adjust the scaling factor as needed
+                double percentageIncrement = Math.abs(knockback) * 0.1;
                 percentage += percentageIncrement;
-            }
+        }
+
+        public void respawn(){
+                health.heartDecrease();
+                x = player == 1 ? 200 : 1300;
+                y = 700;
+                playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
+                percentage = 0;
+                status = IDLE;
+                frame = 0;
+                cooldownP.reset();
+                cooldownBet.reset();
+                cDown.reset();
+                pT.reset();
+        }
         
         public void friction(){
                 if(xVel > 0){
@@ -224,18 +255,55 @@ public class player {
                 }
         }
 
-        public void gravity(Rectangle plat){
+        public void gravity(Rectangle plat, Rectangle[] plats){
                 if(getRect().intersects(plat)){
-                        if(!isPunched){
+                        jumped = false;
+                        if(status != HIT){
                                 yVel = 0;
                         }
                         y = plat.y - getRect().height+5;
+                        status = status != PUNCH ? IDLE : PUNCH\
+                        if(status == IDLE){
+                                if(frame >= stand.length){
+                                        frame = 0;
+                                }
+                        }
+                        else if(status == PUNCH){
+                                if(frame >= punch.length){
+                                        frame = 0;
+                                }
+                        }
+                }
+                else if(intersectList(plats) && yVel >= 0){
+                        jumped = false;
+                        if(status != HIT){
+                                yVel = 0;
+                        }
+                        y = plats[0].y - getRect().height+1;
                         status = status != PUNCH ? IDLE : PUNCH;
-
+                        if(status == IDLE){
+                                if(frame >= stand.length){
+                                        frame = 0;
+                                }
+                        }
+                        else if(status == PUNCH){
+                                if(frame >= punch.length){
+                                        frame = 0;
+                                }
+                        }
                 }
                 else{
                         yVel += 1;
                 }
+        }
+
+        public boolean intersectList(Rectangle[] plats){
+                for(Rectangle p:plats){
+                        if(playerRect.intersects(p)){
+                                return true;
+                        }
+                }
+                return false;
         }
 
         public void update(){
@@ -270,11 +338,13 @@ public class player {
                         frame++;
                         if(frame >= punch.length){
                                 status = IDLE;
+                                frame = 0;
                         }
                 }
         }
 
         public void draw(Graphics g) {
+                health.draw(g);
                 g.setColor(Color.red);
                 cooldown++;
                 if (status == IDLE) {
@@ -289,15 +359,15 @@ public class player {
                 }
                 else if(status == PUNCH){
                         punch();
-                        if (dir == RIGHT){
+                        if (dir == RIGHT && status != IDLE){
                                 g.drawImage(punch[frame], x, y, null);
                         } 
-                        else{
+                        else if(status != IDLE){
                                 Graphics2D g2d = (Graphics2D) g;
                                 g2d.drawImage(punch[frame], x + punch[frame].getWidth(null), y, -punch[frame].getWidth(null), punch[frame].getHeight(null), null);
                         }
                 }
-                else if(isPunched){
+                else if(status == HIT){
                         hit();
                         if (dir == RIGHT){
                                 g.drawImage(hit[frame], x, y, null);
@@ -309,7 +379,6 @@ public class player {
                 }
                 else if(status == JUMP){
                         move(jump);
-                        System.out.println(frame + " " + jump.length);
                         if (dir == RIGHT){
                                 g.drawImage(jump[frame], x, y, null);
                         } 
