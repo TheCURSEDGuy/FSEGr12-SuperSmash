@@ -10,10 +10,11 @@ import javax.swing.ImageIcon;
 
 public class player {
         public int x,y;
+        public int speedX = 2;
         public double xVel,yVel;
         private int player;
         public int percentage;
-        private int dir;
+        public int dir;
         Rectangle playerRect;
         String playerName;
         int frame = 0;
@@ -118,9 +119,13 @@ public class player {
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
                                 dir = RIGHT;
+<<<<<<< HEAD
                                 xVel += 2;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
 
+=======
+                                xVel += speedX;
+>>>>>>> d8e4458115f04d9dd08a76acd327a2d04c45e39e
                         }
                         if(keys[KeyEvent.VK_A]){
                                 dir = LEFT;
@@ -139,9 +144,13 @@ public class player {
                 if(player == -1 && status != HIT){
                         if(keys[KeyEvent.VK_RIGHT]){
                                 dir = RIGHT;
+<<<<<<< HEAD
                                 xVel += 2;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
 
+=======
+                                xVel += speedX;
+>>>>>>> d8e4458115f04d9dd08a76acd327a2d04c45e39e
                         }
                         if(keys[KeyEvent.VK_LEFT]){
                                 dir = LEFT;
@@ -201,7 +210,7 @@ public class player {
 
         public void punched(double dir, double dist, int numPunches) {
                 double yDist = 0;
-                double knockbackScaling = 0.03; // Adjust this value to control knockback scaling
+                double knockbackScaling = 300.0; // Adjust this value to control knockback scaling
             
                 if (player == 1) {
                     pT.reset();
@@ -244,6 +253,69 @@ public class player {
                 cooldownBet.reset();
                 cDown.reset();
                 pT.reset();
+        }
+        
+        public void punchedHarder(double dir){
+            
+                if (player == 1) {
+                    pT.reset();
+                } else {
+                    pT.reset();
+                }
+                
+                double knockback = 15;
+                xVel += knockback;
+                isPunched = true;
+                percentage += 20;
+        }
+        public void waterAttacked(double dir){
+            
+                if (player == 1) {
+                    pT.reset();
+                } else {
+                    pT.reset();
+                }
+                
+                double knockback = 15;
+                xVel += knockback;
+                isPunched = true;
+                percentage += 10;
+
+                speedX = 1;
+                //timer needed
+        }
+
+        public void multiHit(){
+                if (player == 1) {
+                        pT.reset();
+                    } else {
+                        pT.reset();
+                    }
+
+                    isPunched = true;
+                    percentage += 1;
+                    speedX = 0;
+                    //timer needed
+        }
+        public void kick(){
+                if (player == 1) {
+                        pT.reset();
+                } else {
+                        pT.reset();
+                }
+
+                yVel -= 15;
+                isPunched = true;
+                percentage += 10;
+        }
+
+        public void dash(){
+                if(dir == RIGHT){
+                        x += 8;
+                }
+                else{
+                        x -= 8;
+                }
         }
         
         public void friction(){
@@ -400,6 +472,4 @@ public class player {
                 
                 
         }
-
-        
 }
