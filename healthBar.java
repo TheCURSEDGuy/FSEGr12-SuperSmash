@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 public class healthBar {
         Font fontSys = new Font("Arial", Font.BOLD, 50);
         Image heart = new ImageIcon("Pics/hearts.png").getImage();
-        public final int LEFT = 0, RIGHT = 1;
+        public final int LEFT = -1, RIGHT = 1;
         private int dir;
         private double percentage = 0;
         private int hearts = 3;
@@ -18,20 +18,25 @@ public class healthBar {
         Image health;
 
         public healthBar(int dir){
+                System.out.println(dir);
                 heart = heart.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
                 this.dir = dir;
                 y = 700;
                 
-                health = dir == LEFT ? new ImageIcon("Pics/healthLeft.png").getImage() : new ImageIcon("Pics/healthRight.png").getImage();
-                xPer = dir == LEFT ? 250 : 1180;
-                x = dir == LEFT ? 0 : 1600-health.getWidth(null);
-                xHearts = dir == LEFT ? 150 : 1600-health.getWidth(null)+200;
+                health = dir == RIGHT ? new ImageIcon("Pics/healthLeft.png").getImage() : new ImageIcon("Pics/healthRight.png").getImage();
+                xPer = dir == RIGHT ? 250 : 1180;
+                x = dir == RIGHT ? 0 : 1600-health.getWidth(null);
+                xHearts = dir == RIGHT ? 150 : 1600-health.getWidth(null)+200;
 
 
         }
 
         public void update(int percentage){
                 this.percentage = percentage;
+        }
+
+        public void heartDecrease(){
+                hearts--;
         }
 
         public void draw(Graphics g){

@@ -52,8 +52,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	player p2 = new player(-1, "ichigo");
 	Rectangle plat;
 	Rectangle[] plats;
-	healthBar h1 = new healthBar(0);
-	healthBar h2 = new healthBar(1);
 	
 	// KEYS
 	private boolean []keys;
@@ -101,12 +99,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			
 		}
 		else if(screen == GAME){
-			p1.gravity(plat);
+			p1.gravity(plat,plats);
 			p1.move(keys, p1, p2);
 			p1.friction();
 			p1.update();
 
-			p2.gravity(plat);
+			p2.gravity(plat,plats);
 			p2.move(keys, p1, p2);
 			p2.friction();
 			p2.update();
@@ -150,8 +148,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(key == KeyEvent.VK_COMMA){
 				p2.punch(p1);
 			}
-			h1.update(p1.percentage);
-			h2.update(p2.percentage);
 			
 		}
 	}
@@ -283,8 +279,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		// g.fillRect(plat.x, plat.y, plat.width, plat.height);
 		p1.draw(g);
 		p2.draw(g);
-		h1.draw(g);
-		h2.draw(g);
 
 		for(Rectangle r:plats){
 			g.setColor(Color.green);

@@ -1,6 +1,4 @@
 import java.awt.Rectangle;
-import java.util.Spliterators.AbstractIntSpliterator;
-
 
 
 public class powerUps {
