@@ -119,13 +119,9 @@ public class player {
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
                                 dir = RIGHT;
-<<<<<<< HEAD
-                                xVel += 2;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
 
-=======
                                 xVel += speedX;
->>>>>>> d8e4458115f04d9dd08a76acd327a2d04c45e39e
                         }
                         if(keys[KeyEvent.VK_A]){
                                 dir = LEFT;
@@ -144,13 +140,9 @@ public class player {
                 if(player == -1 && status != HIT){
                         if(keys[KeyEvent.VK_RIGHT]){
                                 dir = RIGHT;
-<<<<<<< HEAD
-                                xVel += 2;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
 
-=======
                                 xVel += speedX;
->>>>>>> d8e4458115f04d9dd08a76acd327a2d04c45e39e
                         }
                         if(keys[KeyEvent.VK_LEFT]){
                                 dir = LEFT;
@@ -334,7 +326,7 @@ public class player {
                                 yVel = 0;
                         }
                         y = plat.y - getRect().height+5;
-                        status = status != PUNCH ? IDLE : PUNCH\
+                        status = status != PUNCH ? IDLE : PUNCH;
                         if(status == IDLE){
                                 if(frame >= stand.length){
                                         frame = 0;
