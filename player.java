@@ -153,6 +153,7 @@ public class player {
         }
 
         public void punch(player p){
+                
                 if(cooldownBet.getTime() > 10){
                         frame = 0;
                         status = PUNCH;
