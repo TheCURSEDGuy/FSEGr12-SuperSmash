@@ -23,7 +23,7 @@ public class gameFSE extends JFrame{
 
 class GamePanel extends JPanel implements KeyListener, ActionListener, MouseListener{
     	private final int INTRO = 0, CHARSELECT = 1, GAME = 2, END = 3;
-	private int screen = GAME;
+	private int screen = INTRO;
     	private boolean text1 = true;
     	private boolean text2 = false;
     	int frameCnt = 0;
@@ -46,10 +46,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	int charY = 0;
 	int charTransparency = 0;
 	boolean charSel = false;
+	boolean char1 = false;
+	boolean char2 = false;
 
 	//OBJECTS
-	player p1 = new player(1, "luffy");
-	player p2 = new player(-1, "ichigo");
+	player p1 = new player();
+	player p2 = new player();
 	Rectangle plat;
 	Rectangle[] plats;
 	
@@ -58,6 +60,10 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	Timer timer;
 	Image back;
 	Image platf;
+
+	// IMAGES
+	Image luffy = new ImageIcon("Pics/luffy/stand/0.png").getImage();
+	Image ichigo = new ImageIcon("Pics/ichigo/stand/0.png").getImage();
 	
 	public GamePanel(){
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
@@ -157,8 +163,33 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	public void keyTyped(KeyEvent ke){}
 	@Override
 	public void mouseClicked(MouseEvent e){
+		int mx = e.getX();
+		int my = e.getY();
 		if(charSel){
-			screen = GAME;
+			if(mx > 100 && mx < 300 && my > 600 && my < 800){
+				if(!char1){
+					char1 = true;
+					p1 = new player(1, "luffy");
+				}
+				else if(!char2 && p1.playerName != "luffy"){
+					char2 = true;
+					p2 = new player(-1, "ichigo");
+				}
+			}
+			if(mx > 400 && mx < 600 && my > 600 && my < 800){
+				if(!char1){
+					char1 = true;
+					p1 = new player(1, "luffy");
+				}
+				else if(!char2 && p1.playerName != "ichigo"){
+					System.out.println("ichigo2");
+					char2 = true;
+					p2 = new player(-1, "ichigo");
+				}
+			}
+			if(char1 && char2 && new Rectangle(getWidth()-200, 0, 200, 100).contains(mx, my)){
+				screen = GAME;
+			}
 		}
 	}
 
@@ -221,9 +252,9 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				screen = CHARSELECT;
 			}
 			g.fillRect(0, 0, getWidth(), getHeight());
-            g.setColor(Color.red);  
-		    g.setFont(fontLocal);
-		    g.drawString("SMASH", txtX, 400);
+            		g.setColor(Color.red);  
+	    		g.setFont(fontLocal);
+	    		g.drawString("SMASH", txtX, 400);
 			g.setColor(new Color(255, 255, 255, txtTransparency));
 			g.setFont(fontLocal2);
 			g.drawString("Press sumn to start", txtX, 450);
@@ -231,7 +262,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			g.drawLine(0, 0, getWidth(), getHeight());
 			g.setColor(new Color(255, 255, 255, polTransparency));
 			g.fillPolygon(new int[]{0,polX,getWidth(),getWidth(),getWidth()-polX,0}, new int[]{0,0,getHeight()-polX,getHeight(),getHeight(),polY}, 6);
-        }
+        	}
 		if(screen == CHARSELECT){
 			if(fadeLIGHT > 0){
 				fadeLIGHT -= 5;
@@ -261,13 +292,28 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 					g.setColor(new Color(255, 255, 255, 100));
 					g.fillPolygon(new int[]{100+300*i,300+300*i,500+300*i,300+300*i}, new int[]{600,800,800,600}, 4);
 				}
+				if(p1.playerName != ""){
+					if(p1.playerName == "luffy"){
+						g.drawImage(luffy, 500, 200, luffy.getWidth(null)*3, luffy.getHeight(null)*5, null);
+					}
+					else if(p1.playerName == "ichigo"){
+						g.drawImage(ichigo, 500, 200, ichigo.getWidth(null)*3, ichigo.getHeight(null)*5, null);
+
+					}
+				}
+				if(p2.playerName != ""){
+					if(p1.playerName == "luffy"){
+						g.drawImage(ichigo, 1100, 200, -(ichigo.getWidth(null)*3), ichigo.getHeight(null)*5, null);
+					}
+					else if(p1.playerName == "ichigo"){
+						g.drawImage(luffy, 1100, 200, -(luffy.getWidth(null)*3), luffy.getHeight(null)*5, null);
+					}
+				}
+				g.drawRect(getWidth()-200, 0, 200, 100);
 				// g.setColor(Color.gray);
 				// g.fillPolygon(new int[]{100,300,500,300}, new int[]{100,100,400,400}, 4);
 				// g.setColor(Color.black);
 				// g.fillPolygon(new int[]{150,250,400,200}, new int[]{100,100,400,400}, 4);
-
-				g.fillRect(400,400,100,100);
-
 			}
 
 
@@ -276,8 +322,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		
 		g.drawImage(back, -330, 0, back.getWidth(this)*3, back.getHeight(this)*3, this);
 		g.drawImage(platf, plat.x-20, plat.y-30, plat.width, plat.height+100, this);
-		g.setColor(Color.green);
-		// g.fillRect(plat.x, plat.y, plat.width, plat.height);
 		p1.draw(g);
 		p2.draw(g);
 

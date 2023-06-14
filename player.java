@@ -16,7 +16,7 @@ public class player {
         public int percentage;
         public int dir;
         Rectangle playerRect;
-        String playerName;
+        String playerName = "";
         int frame = 0;
         public int status;
 
@@ -59,7 +59,9 @@ public class player {
         Image[] ult;
         Image[] hit;
 
-        
+        public player(){
+                playerName = "";
+        }
 
 
         public player(int player, String playerName){
@@ -120,12 +122,11 @@ public class player {
                         if(keys[KeyEvent.VK_D]){
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
-
                                 xVel += speedX;
                         }
                         if(keys[KeyEvent.VK_A]){
                                 dir = LEFT;
-                                xVel -= 30;
+                                xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
 
                         }
@@ -141,12 +142,11 @@ public class player {
                         if(keys[KeyEvent.VK_RIGHT]){
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
-
                                 xVel += speedX;
                         }
                         if(keys[KeyEvent.VK_LEFT]){
                                 dir = LEFT;
-                                xVel -= 2;
+                                xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                         }
         
@@ -172,7 +172,7 @@ public class player {
         }
 
         public void punch(player p){
-                if(cooldownBet.getTime() > 10){
+                if(cooldownBet.getTime() > 30){
                         frame = 0;
                         status = PUNCH;
                         cooldownBet.reset();
@@ -312,10 +312,10 @@ public class player {
         
         public void friction(){
                 if(xVel > 0){
-                        xVel -= 1;
+                        xVel -= 1.5;
                 }
                 else if(xVel < 0){
-                        xVel += 1;
+                        xVel += 1.5;
                 }
         }
 
@@ -326,7 +326,9 @@ public class player {
                                 yVel = 0;
                         }
                         y = plat.y - getRect().height+5;
-                        status = status != PUNCH ? IDLE : PUNCH;
+                        if(status != HIT){
+                                status = status != PUNCH ? IDLE : PUNCH;
+                        }
                         if(status == IDLE){
                                 if(frame >= stand.length){
                                         frame = 0;
