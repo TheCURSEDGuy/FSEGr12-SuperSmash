@@ -34,7 +34,7 @@ public class player {
         public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
-        private final int WAIT = 4;
+        private final int WAIT = 8;
 
         // attacks
         private int typePunch = normalP;

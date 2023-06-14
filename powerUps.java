@@ -1,9 +1,4 @@
 import java.awt.Rectangle;
-<<<<<<< HEAD
-=======
-
->>>>>>> d8e4458115f04d9dd08a76acd327a2d04c45e39e
-
 
 public class powerUps {
     public int width, height, player;
