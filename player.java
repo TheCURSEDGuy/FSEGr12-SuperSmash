@@ -112,6 +112,7 @@ public class player {
                 System.out.println(dir);
                 pU = new powerUps(playerRect.width, playerRect.height, player);
                 health = new healthBar(dir, new ImageIcon("Pics/" + playerName + "/pic.png").getImage());
+                System.out.println(health);
 
 
         }
