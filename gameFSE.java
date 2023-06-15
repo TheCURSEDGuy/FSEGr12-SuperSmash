@@ -23,7 +23,7 @@ public class gameFSE extends JFrame{
 
 class GamePanel extends JPanel implements KeyListener, ActionListener, MouseListener{
     	private final int INTRO = 0, CHARSELECT = 1, GAME = 2, END = 3;
-		private int screen = GAME;
+		private int screen = INTRO;
     	private boolean text1 = true;
     	private boolean text2 = false;
     	int frameCnt = 0;
@@ -54,6 +54,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	player p2 = new player();
 	Rectangle plat;
 	Rectangle[] plats;
+	// powerUps pu;
 	
 	// KEYS
 	private boolean []keys;
@@ -73,7 +74,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		keys = new boolean[KeyEvent.KEY_LAST+1];
 
         String fName = "TITLEFONT.ttf";
-	String fName2 = "SUBTITLEFONT.otf";
+		String fName2 = "SUBTITLEFONT.otf";
     	InputStream is = GamePanel.class.getResourceAsStream(fName);
 		InputStream is2 = GamePanel.class.getResourceAsStream(fName2);
     	try{
@@ -155,7 +156,90 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(key == KeyEvent.VK_COMMA){
 				p2.punch(p1);
 			}
-			
+			if(key == KeyEvent.VK_E){
+				if(p1.playerName == "ichigo"){
+					p1.dash();
+				}
+				else if(p1.playerName == "luffy"){
+					p1.hardAttack(p1, p2);
+				}
+				else if(p1.playerName == "aang"){
+					p1.waterAttack(p1, p2);
+				}
+				else if(p1.playerName == "kakashi"){
+					p1.hardAttack(p1, p2);
+				}
+			}
+			if(key == KeyEvent.VK_PERIOD){
+				if(p2.playerName == "ichigo"){
+					p2.dash();
+				}
+				else if(p2.playerName == "luffy"){
+					p2.hardAttack(p2, p1);
+				}
+				else if(p1.playerName == "aang"){
+					p2.waterAttack(p2, p1);
+				}
+				else if(p1.playerName == "kakashi"){
+					p2.hardAttack(p2, p1);
+				}
+			}
+			if(key == KeyEvent.VK_R){
+				if(p1.playerName == "ichigo"){
+					p1.multiHit(p1,p2);
+				}
+				else if(p1.playerName == "luffy"){
+					p1.multiHit(p1, p2);
+				}
+				else if(p1.playerName == "aang"){
+					p1.multiHit(p1, p2);
+				}
+				else if(p1.playerName == "kakashi"){
+					p1.kickUp(p1, p2);
+				}
+			}
+			if(key == KeyEvent.VK_SLASH){
+				if(p2.playerName == "ichigo"){
+					p2.multiHit(p2,p1);
+				}
+				else if(p1.playerName == "luffy"){
+					p2.multiHit(p2, p1);
+				}
+				else if(p1.playerName == "aang"){
+					p2.multiHit(p2, p1);
+				}
+				else if(p1.playerName == "kakashi"){
+					p2.kickUp(p2, p1);
+				}
+			}
+			if(key == KeyEvent.VK_S){
+				if(p1.playerName == "ichigo"){
+					p1.ichigoUlt(p1, p2);
+				}
+				else if(p1.playerName == "luffy"){
+					p1.luffyUlt(p2);
+				}
+				else if(p1.playerName == "aang"){
+					p1.aangUlt(p2);
+				}
+				else if(p1.playerName == "kakashi"){
+					p1.kakashiUlt(p2);
+				}
+			}
+			if(key == KeyEvent.VK_DOWN){
+				if(p2.playerName == "ichigo"){
+					p2.ichigoUlt(p2, p1);
+				}
+				else if(p2.playerName == "luffy"){
+					p2.luffyUlt(p1);
+				}
+				else if(p2.playerName == "aang"){
+					p2.aangUlt(p1);
+				}
+				else if(p1.playerName == "kakashi"){
+					p2.kakashiUlt(p1);
+				}
+			}
 		}
 	}
 	
