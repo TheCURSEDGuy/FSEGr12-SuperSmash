@@ -31,7 +31,7 @@ public class player {
 
         // finals
         public final int LEFT = -1, RIGHT = 1, UP = 2, NONE = 3;
-        public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4;
+        public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4, DASH = 5, ULT = 6, HARDATTACK = 7, MULTIHIT = 8, WATERATTACK = 9, KICK = 10, BOULDER = 11;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
         private final int WAIT = 4;
@@ -45,6 +45,18 @@ public class player {
         private timer cooldownP = new timer(1000);
         private timer cooldownBet = new timer(1000);
         private int cooldown = 0;
+
+        private timer cooldownDash = new timer(2000);
+        private timer cooldownKick = new timer(2000);
+        private timer cooldownWaterAttack = new timer(2000);
+        private timer cooldownHardAttack = new timer(2000);
+        private timer cooldownMultiHit = new timer(2000);
+        private timer cooldownBoulder = new timer(2000);
+
+        private timer cooldownUltKak = new timer(3000);
+        private timer cooldownUltAang = new timer(3000);
+        private timer cooldownUltIchigo = new timer(3000);
+        private timer cooldownUltLuffy = new timer(3000);
 
         // health
         healthBar health;
@@ -122,6 +134,14 @@ public class player {
                 pT.update();
                 cooldownP.update();
                 cooldownBet.update();
+                cooldownDash.update();
+                cooldownKick.update();
+                cooldownHardAttack.update();
+                cooldownBoulder.update();
+                cooldownMultiHit.update();
+                cooldownWaterAttack.update();
+                
+
                 if(isStunned){
                         xVel = 0;
                         yVel = 0;
@@ -251,87 +271,28 @@ public class player {
                 pT.reset();
         }
         
-        public void punchedHarder(double dir){
-            
-                if (player == 1) {
-                    pT.reset();
-                } else {
-                    pT.reset();
-                }
-                
-                double knockback = 15;
-                xVel += knockback;
-                isPunched = true;
-        }
-        public void waterAttacked(double dir){
-            
-                if (player == 1) {
-                    pT.reset();
-                } else {
-                    pT.reset();
-                }
-                
-                double knockback = 15;
-                xVel += knockback;
-                isPunched = true;
+        
+        
 
-                speedX = 1;
-                //timer needed
-        }
-
-        public void multiHit(){
-                if (player == 1) {
-                        pT.reset();
-                    } else {
-                        pT.reset();
-                    }
-
-                    isPunched = true;
-                    speedX = 0;
-                    //timer needed
-        }
-        public void kick(){
-                if (player == 1) {
-                        pT.reset();
-                } else {
-                        pT.reset();
-                }
-
-                yVel -= 15;
-                isPunched = true;
-        }
+        
+        
 
         public void dash(){
-                if (player == 1) {
-                        pT.reset();
-                } else {
-                        pT.reset();
-                }
-
-                if(dir == RIGHT){
-                        x += 8;
-                }
-                else{
-                        x -= 8;
+                //timer to cooldown
+                //and timer to fit with animation
+                if(cooldownDash.getTime() > 50){
+                        frame = 0;
+                        status = DASH;
+                        cooldownDash.reset();
+                        if(dir == RIGHT){
+                                x += 150;
+                        }
+                        else{
+                                x -= 150;
+                        }
                 }
         }
 
-        public void boulder(){
-                if (player == 1) {
-                        pT.reset();
-                } else {
-                        pT.reset();
-                }
-
-                if(dir == RIGHT){
-                        xVel += 5;
-                }
-                else{
-                        xVel -= 5;
-                }
-
-                // make so he can cancel
-        }
 
 
         public void kakashiUltHit(){
@@ -356,14 +317,20 @@ public class player {
     public void multiHit(player bigSpoon, player littleSpoon){
         Rectangle swordieSlash = new Rectangle(bigSpoon.getRect().x - (int)bigSpoon.getRect().getHeight(), bigSpoon.getRect().y, 2*bigSpoon.getRect().width, bigSpoon.getRect().height);
         if(swordieSlash.intersects(littleSpoon.getRect())){
-            littleSpoon.punchedHarder(bigSpoon.dir);
+
         }
     }
 
     public void hardAttack(player bigSpoon, player littleSpoon){
         Rectangle player = bigSpoon.dir == bigSpoon.RIGHT ? new Rectangle(bigSpoon.getRect().x, bigSpoon.getRect().y, 2*bigSpoon.getRect().width, bigSpoon.getRect().height) : new Rectangle(bigSpoon.getRect().x - bigSpoon.getRect().width, bigSpoon.getRect().y, 2*bigSpoon.getRect().width, bigSpoon.getRect().height);
         if(player.intersects(littleSpoon.getRect())){
-            littleSpoon.punchedHarder(bigSpoon.dir);
+                if(bigSpoon.dir == RIGHT){
+                        littleSpoon.xVel += 15;
+                }
+                else{
+                        littleSpoon.xVel -= 15;
+                }
+                littleSpoon.isPunched = true;
         }
         littleSpoon.isPunched = false;
     }
@@ -371,28 +338,56 @@ public class player {
 
     public void kickUp(player kakashi, player victim){
         Rectangle player = kakashi.dir == kakashi.RIGHT ? new Rectangle(kakashi.getRect().x, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height) : new Rectangle(kakashi.getRect().x - kakashi.getRect().width, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height);
-        if(player.intersects(victim.getRect())){
-            victim.kick();
+        if(cooldownKick.getTime() > 50){
+                frame = 0;
+                status = KICK;
+                cooldownKick.reset();
+                kakashi.status = KICK;
+                if(player.intersects(victim.getRect())){
+                    victim.yVel -= 30;
+                    victim.isPunched = true;
+                }
+                victim.isPunched = false;
+        }
+}
+
+    public void luffyBoulder(player luffy, player victim){
+        Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
+        if(cooldownBoulder.getTime() > 100){
+                if(player.intersects(victim.getRect())){
+                    if(luffy.dir == RIGHT){
+                                victim.xVel += 30;
+                        }
+                        else{
+                                victim.xVel -= 30;
+                        }
+                        victim.isPunched = true;
+                }
+                // make so he can cancel
         }
         victim.isPunched = false;
     }
 
-    public void luffyBoulder(player luffy, player victim){
-        Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
-        if(player.intersects(victim.getRect())){
-            victim.punchedHarder(luffy.dir);
-        }
-    }
-
-//     public void ichigoDash(player ichigo){
-//         ichigo.dash();
-//     }
-
     public void waterAttack(player aang, player victim){
         Rectangle player = aang.dir == aang.RIGHT ? new Rectangle(aang.getRect().x, aang.getRect().y, 3*aang.getRect().width, aang.getRect().height) : new Rectangle(aang.getRect().x - aang.getRect().width, aang.getRect().y, 2*aang.getRect().width, aang.getRect().height);
-        if(player.intersects(victim.getRect())){
-            victim.waterAttacked(aang.dir);
+        if(cooldownWaterAttack.getTime() > 50){
+                frame = 0;
+                status = WATERATTACK;
+                cooldownWaterAttack.reset();
+                if(player.intersects(victim.getRect())){
+                        if(aang.dir == RIGHT){
+                                victim.xVel += 15;
+                        }
+                        else{
+                                victim.xVel -= 15;
+                        }
+                        victim.isPunched = true;
+
+                        victim.speedX = 1;
+                        //timer needed
+                }
         }
+        victim.isPunched = false;
     }
 
 
