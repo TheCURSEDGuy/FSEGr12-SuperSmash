@@ -23,7 +23,7 @@ public class gameFSE extends JFrame{
 
 class GamePanel extends JPanel implements KeyListener, ActionListener, MouseListener{
     	private final int INTRO = 0, CHARSELECT = 1, GAME = 2, END = 3;
-	private int screen = INTRO;
+		private int screen = GAME;
     	private boolean text1 = true;
     	private boolean text2 = false;
     	int frameCnt = 0;

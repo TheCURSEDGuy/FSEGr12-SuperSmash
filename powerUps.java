@@ -23,7 +23,7 @@ public class powerUps {
     public void multiHit(player bigSpoon, player littleSpoon){
         Rectangle swordieSlash = new Rectangle(bigSpoon.getRect().x - (int)bigSpoon.getRect().getHeight(), bigSpoon.getRect().y, 2*bigSpoon.getRect().width, bigSpoon.getRect().height);
         if(swordieSlash.intersects(littleSpoon.getRect())){
-
+            littleSpoon.punchedHarder(bigSpoon.dir);
         }
     }
 
@@ -45,7 +45,10 @@ public class powerUps {
     }
 
     public void luffyBoulder(player luffy, player victim){
-
+        Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
+        if(player.intersects(victim.getRect())){
+            victim.punchedHarder(luffy.dir);
+        }
     }
 
     public void ichigoDash(player ichigo){
@@ -53,6 +56,39 @@ public class powerUps {
     }
 
     public void waterAttack(player aang, player victim){
-        
+        Rectangle player = aang.dir == aang.RIGHT ? new Rectangle(aang.getRect().x, aang.getRect().y, 3*aang.getRect().width, aang.getRect().height) : new Rectangle(aang.getRect().x - aang.getRect().width, aang.getRect().y, 2*aang.getRect().width, aang.getRect().height);
+        if(player.intersects(victim.getRect())){
+            victim.waterAttacked(aang.dir);
+        }
+    }
+
+
+
+
+
+
+
+
+    public void kakashiUlt(player victim){
+        victim.kakashiUltHit();
+    }
+
+
+    public void luffyUlt(player victim){
+        victim.luffyUltPunch();
+    }
+
+    public void aangUlt(player victim){
+        victim.aangUltHit();
+    }
+
+    public void ichigoUlt(player ichigo, player victim){
+        int ogX = ichigo.x;
+        //timer
+        ichigo.x = victim.x - victim.getRect().width;
+        victim.ichigoPeePeeUlt();
+        //animation
+        //timer
+        ichigo.x = ogX;
     }
 }

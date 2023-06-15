@@ -19,6 +19,7 @@ public class player {
         String playerName = "";
         int frame = 0;
         public int status;
+        public boolean isStunned = false;
 
         // booleans
         boolean jumped = false;
@@ -58,6 +59,8 @@ public class player {
         Image[] stand;
         Image[] ult;
         Image[] hit;
+
+        powerUps pU;
 
         public player(){
                 playerName = "";
@@ -109,14 +112,21 @@ public class player {
                 dir = player == 1 ? RIGHT : LEFT;
                 System.out.println(dir);
                 health = new healthBar(dir);
+                pU = new powerUps(playerRect.width, playerRect.height, player);
 
 
         }
 
         public void move(boolean keys[], player p1, player p2){
+                pU.update();
                 pT.update();
                 cooldownP.update();
                 cooldownBet.update();
+                if(isStunned){
+                        xVel = 0;
+                        yVel = 0;
+                        // timer
+                }
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
@@ -302,6 +312,12 @@ public class player {
         }
 
         public void dash(){
+                if (player == 1) {
+                        pT.reset();
+                } else {
+                        pT.reset();
+                }
+
                 if(dir == RIGHT){
                         x += 8;
                 }
@@ -309,6 +325,49 @@ public class player {
                         x -= 8;
                 }
         }
+
+        public void boulder(){
+                if (player == 1) {
+                        pT.reset();
+                } else {
+                        pT.reset();
+                }
+
+                if(dir == RIGHT){
+                        xVel += 5;
+                }
+                else{
+                        xVel -= 5;
+                }
+
+                // make so he can cancel
+        }
+
+
+        public void kakashiUltHit(){
+                isStunned = true;
+                percentage += 40;
+                //different sprite called kakashis "ult hit"
+        }
+
+        public void luffyUltPunch(){
+                isStunned = true;
+                percentage += 40;
+                //different sprite
+        }
+
+        public void aangUltHit(){
+                isStunned = true;
+                percentage += 40;
+                //different sprite
+        }
+
+        public void ichigoPeePeeUlt(){
+                isStunned = true;
+                percentage += 40;
+        }
+
+
         
         public void friction(){
                 if(xVel > 0){
