@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Polygon;
+
 import javax.swing.ImageIcon;
 
 public class healthBar {
@@ -16,6 +18,7 @@ public class healthBar {
         private int healthNum = 100;
         private Color healthColor = Color.green;
         private int xhealth;
+        private int xImage;
         private Image person;
         Image health;
 
@@ -31,6 +34,8 @@ public class healthBar {
                 xHearts = dir == RIGHT ? 150 : 1600-health.getWidth(null)+200;
                 healthColor = dir == RIGHT ? Color.blue : Color.red;
                 xhealth = dir == RIGHT ? 180 : 1125;
+                xImage = dir == RIGHT ? 25 : 1375;
+                this.person = person;
 
         }
 
@@ -51,5 +56,6 @@ public class healthBar {
                 for(int i = 0; i < hearts; i++){
                         g.drawImage(heart, xHearts+i*40, 922, null);
                 }
+                g.drawImage(person, xImage, y, null);
         }
 }
