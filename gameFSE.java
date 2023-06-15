@@ -63,7 +63,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
 	// IMAGES
 	Image luffy = new ImageIcon("Pics/luffy/stand/0.png").getImage();
-	Image ichigo = new ImageIcon("Pics/ichigo/stand/0.png").getImage();
+	Image ichigo = new ImageIcon("Pics/ichigo/pic.png").getImage();
 	
 	public GamePanel(){
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
@@ -173,13 +173,13 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				}
 				else if(!char2 && p1.playerName != "luffy"){
 					char2 = true;
-					p2 = new player(-1, "ichigo");
+					p2 = new player(-1, "luffy");
 				}
 			}
 			if(mx > 400 && mx < 600 && my > 600 && my < 800){
 				if(!char1){
 					char1 = true;
-					p1 = new player(1, "luffy");
+					p1 = new player(1, "ichigo");
 				}
 				else if(!char2 && p1.playerName != "ichigo"){
 					System.out.println("ichigo2");
@@ -294,19 +294,21 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				}
 				if(p1.playerName != ""){
 					if(p1.playerName == "luffy"){
-						g.drawImage(luffy, 500, 200, luffy.getWidth(null)*3, luffy.getHeight(null)*5, null);
+						g.drawImage(luffy, 500, 225, luffy.getWidth(null)*3, luffy.getHeight(null)*3, null);
 					}
 					else if(p1.playerName == "ichigo"){
-						g.drawImage(ichigo, 500, 200, ichigo.getWidth(null)*3, ichigo.getHeight(null)*5, null);
+						g.drawImage(ichigo, 500, 200, ichigo.getWidth(null), ichigo.getHeight(null), null);
 
 					}
 				}
 				if(p2.playerName != ""){
-					if(p1.playerName == "luffy"){
-						g.drawImage(ichigo, 1100, 200, -(ichigo.getWidth(null)*3), ichigo.getHeight(null)*5, null);
+					if(p2.playerName == "luffy"){
+						System.out.println("luffy");
+						g.drawImage(luffy, 1100, 225, -(luffy.getWidth(null))*3, luffy.getHeight(null)*3, null);
 					}
-					else if(p1.playerName == "ichigo"){
-						g.drawImage(luffy, 1100, 200, -(luffy.getWidth(null)*3), luffy.getHeight(null)*5, null);
+					else if(p2.playerName == "ichigo"){
+						System.out.println("ichigo");
+						g.drawImage(ichigo, 1100, 200, -(ichigo.getWidth(null)), ichigo.getHeight(null), null);
 					}
 				}
 				g.drawRect(getWidth()-200, 0, 200, 100);
