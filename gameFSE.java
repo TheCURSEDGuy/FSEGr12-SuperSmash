@@ -23,7 +23,7 @@ public class gameFSE extends JFrame{
 
 class GamePanel extends JPanel implements KeyListener, ActionListener, MouseListener{
     	private final int INTRO = 0, CHARSELECT = 1, GAME = 2, END = 3;
-		private int screen = GAME;
+	private int screen = INTRO;
     	private boolean text1 = true;
     	private boolean text2 = false;
     	int frameCnt = 0;
@@ -48,12 +48,16 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	boolean charSel = false;
 	boolean char1 = false;
 	boolean char2 = false;
+	int mx, my;
 
 	//OBJECTS
 	player p1 = new player();
 	player p2 = new player();
 	Rectangle plat;
 	Rectangle[] plats;
+	hand h = new hand();
+	circle c1 = new circle(1);
+	circle c2 = new circle(2);
 	
 	// KEYS
 	private boolean []keys;
@@ -64,6 +68,9 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	// IMAGES
 	Image luffy = new ImageIcon("Pics/luffy/stand/0.png").getImage();
 	Image ichigo = new ImageIcon("Pics/ichigo/pic.png").getImage();
+	Image hand = new ImageIcon("Pics/hand.png").getImage();
+	Image p1Circle = new ImageIcon("Pics/p1Circle.png").getImage();
+	Image p2Circle = new ImageIcon("Pics/p2Circle.png").getImage();
 	
 	public GamePanel(){
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
@@ -101,8 +108,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	}
 
 	public void move(){
+		mx = MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x;
+		my = MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y;
 		if(screen == INTRO){
 			
+		}
+		else if(screen == CHARSELECT){			
 		}
 		else if(screen == GAME){
 			p1.gravity(plat,plats);
@@ -133,6 +144,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	public void keyReleased(KeyEvent ke){
 		int key = ke.getKeyCode();
 		keys[key] = false;
+		
 	}	
 	
 	@Override
@@ -213,6 +225,23 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	@Override
 	public void	mouseReleased(MouseEvent e){}
 
+	public void moveHand(Graphics g){
+		int x = mx-hand.getWidth(null)/2;
+		int y = my-hand.getHeight(null)/2;
+		h.move(x, y);
+	}
+
+	public void moveCircle(Graphics g){
+		if(h.getRect().contains(c1.x,c1.y)){
+			c1.isTouched();
+			h.switchMode(1);
+		}
+		else if(h.getRect().contains(c2.x,c2.y)){
+			c2.isTouched();
+			h.switchMode(2);
+		}
+	}
+
 	@Override
 	public void paint(Graphics g){
 		if(screen == INTRO){
@@ -287,10 +316,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(new Color(10, 10, 10, charTransparency));
 			g.fillPolygon(new int[]{25,125-charX,1550,1450+charX}, new int[]{900,900-charY,500,500+charY}, 4);
+			g.setColor(new Color(255, 255, 255, 0));
+
 			if(charSel){
 				for(int i = 0; i < 4; i++){
 					g.setColor(new Color(255, 255, 255, 100));
-					g.fillPolygon(new int[]{100+300*i,300+300*i,500+300*i,300+300*i}, new int[]{600,800,800,600}, 4);
+					g.fillRect(375*i+75,550,300,300);
 				}
 				if(p1.playerName != ""){
 					if(p1.playerName == "luffy"){
@@ -317,6 +348,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				// g.setColor(Color.black);
 				// g.fillPolygon(new int[]{150,250,400,200}, new int[]{100,100,400,400}, 4);
 			}
+			moveHand(g);
+			h.draw(g);
+			c1.draw(g);
+			c2.draw(g);
+
+
 
 
 		}
