@@ -101,7 +101,6 @@ public class player {
                         hit[i] = new ImageIcon("Pics/" + playerName + "/hit/" + i + ".png").getImage();
                 }
 
-                
                 this.playerName = playerName;
 
                 x = player == 1 ? 200 : 1300;
@@ -109,10 +108,8 @@ public class player {
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
                 this.player = player;
                 dir = player == 1 ? RIGHT : LEFT;
-                System.out.println(dir);
                 // pU = new powerUps(playerRect.width, playerRect.height, player);
                 health = new healthBar(dir, new ImageIcon("Pics/" + playerName + "/pic.png").getImage());
-                System.out.println(health);
 
 
         }
@@ -177,6 +174,9 @@ public class player {
                 if(x > 1600 && x < 0){respawn();}
                 if(y > 1000){respawn();}
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
+                if(health.healthNum <= 0){
+                        respawn();
+                }
 
         }
 
@@ -210,9 +210,7 @@ public class player {
         }
 
         public void punched(double dir, double dist, int numPunches) {
-                double yDist = 0;
-                double knockbackScaling = 300.0; // Adjust this value to control knockback scaling
-            
+                double yDist = 0;            
                 if (player == 1) {
                     pT.reset();
                 } else {
@@ -232,7 +230,8 @@ public class player {
                     dist = 10;
                 }
 
-                xVel += 10;
+                health.healthDown((int)dist);
+                xVel += 10*dir;
                 yVel -= yDist;
                 frame = 0;
                 status = HIT;
@@ -240,6 +239,7 @@ public class player {
 
         public void respawn(){
                 health.heartDecrease();
+                health.healthNum = 100;
                 x = player == 1 ? 200 : 1300;
                 y = 700;
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
@@ -255,7 +255,8 @@ public class player {
             
                 if (player == 1) {
                     pT.reset();
-                } else {
+                }
+                else {
                     pT.reset();
                 }
                 
@@ -267,7 +268,8 @@ public class player {
             
                 if (player == 1) {
                     pT.reset();
-                } else {
+                } 
+                else {
                     pT.reset();
                 }
                 
@@ -282,9 +284,10 @@ public class player {
         public void multiHit(){
                 if (player == 1) {
                         pT.reset();
-                    } else {
+                } 
+                else {
                         pT.reset();
-                    }
+                }
 
                     isPunched = true;
                     speedX = 0;

@@ -68,9 +68,11 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	// IMAGES
 	Image luffy = new ImageIcon("Pics/luffy/stand/0.png").getImage();
 	Image ichigo = new ImageIcon("Pics/ichigo/pic.png").getImage();
+	Image kakashi = new ImageIcon("Pics/kakashi/stand/0.png").getImage();
 	Image hand = new ImageIcon("Pics/hand.png").getImage();
 	Image p1Circle = new ImageIcon("Pics/p1Circle.png").getImage();
 	Image p2Circle = new ImageIcon("Pics/p2Circle.png").getImage();
+	
 	
 	public GamePanel(){
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
@@ -113,7 +115,47 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		if(screen == INTRO){
 			
 		}
-		else if(screen == CHARSELECT){			
+		else if(screen == CHARSELECT){
+			if(new Rectangle(75,550,300,300).contains(c1.x,c1.y)){
+				char1 = true;
+				p1 = new player(1, "luffy");
+			}
+			else if(new Rectangle(475,550,300,300).contains(c1.x,c1.y)){
+				System.out.println("ichigo");
+				char1 = true;
+				p1 = new player(1, "ichigo");
+			}
+			else if(new Rectangle(875,550,300,300).contains(c1.x,c1.y)){
+				char1 = true;
+				p1 = new player(1, "kakashi");
+			}
+			else if(new Rectangle(1275,550,300,300).contains(c1.x,c1.y)){
+				char1 = true;
+				p1 = new player(1, "aang");
+			}
+			else{
+				char1 = false;
+			}
+			if(new Rectangle(75,550,300,300).contains(c2.x,c2.y)){
+				char2 = true;
+				p2 = new player(-1, "luffy");
+			}
+			else if(new Rectangle(475,550,300,300).contains(c2.x,c2.y)){
+				char2 = true;
+				p2 = new player(-1, "ichigo");
+			}
+			else if(new Rectangle(875,550,300,300).contains(c2.x,c2.y)){
+				char2 = true;
+				p2 = new player(-1, "kakashi");
+			}
+			else if(new Rectangle(1275,550,300,300).contains(c2.x,c2.y)){
+				char2 = true;
+				p2 = new player(-1, "aang");
+			}
+			else{
+				char2 = false;
+			}
+					
 		}
 		else if(screen == GAME){
 			p1.gravity(plat,plats);
@@ -178,30 +220,32 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		int mx = e.getX();
 		int my = e.getY();
 		if(charSel){
-			if(mx > 100 && mx < 300 && my > 600 && my < 800){
-				if(!char1){
-					char1 = true;
-					p1 = new player(1, "luffy");
-				}
-				else if(!char2 && p1.playerName != "luffy"){
-					char2 = true;
-					p2 = new player(-1, "luffy");
-				}
-			}
-			if(mx > 400 && mx < 600 && my > 600 && my < 800){
-				if(!char1){
-					char1 = true;
-					p1 = new player(1, "ichigo");
-				}
-				else if(!char2 && p1.playerName != "ichigo"){
-					System.out.println("ichigo2");
-					char2 = true;
-					p2 = new player(-1, "ichigo");
-				}
-			}
+			// if(mx > 100 && mx < 300 && my > 600 && my < 800){
+			// 	if(!char1){
+			// 		char1 = true;
+			// 		p1 = new player(1, "luffy");
+			// 	}
+			// 	else if(!char2 && p1.playerName != "luffy"){
+			// 		char2 = true;
+			// 		p2 = new player(-1, "luffy");
+			// 	}
+			// }
+			// if(mx > 400 && mx < 600 && my > 600 && my < 800){
+			// 	if(!char1){
+			// 		char1 = true;
+			// 		p1 = new player(1, "ichigo");
+			// 	}
+			// 	else if(!char2 && p1.playerName != "ichigo"){
+			// 		System.out.println("ichigo2");
+			// 		char2 = true;
+			// 		p2 = new player(-1, "ichigo");
+			// 	}
+			// }
 			if(char1 && char2 && new Rectangle(getWidth()-200, 0, 200, 100).contains(mx, my)){
 				screen = GAME;
-			}
+			}	
+
+			
 		}
 	}
 
@@ -216,6 +260,9 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		if(screen == INTRO){
             		repaint();
 		}
+		if(screen == CHARSELECT){
+			moveCircle();
+		}
         	if(screen == GAME){
             		move();
             		repaint();
@@ -223,7 +270,16 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	}
 
 	@Override
-	public void	mouseReleased(MouseEvent e){}
+	public void	mouseReleased(MouseEvent e){
+		if(c1.isTouched){
+			c1.isNotTouched(mx, my);
+			h.switchMode(0);
+		}
+		if(c2.isTouched){
+			c2.isNotTouched(mx,my);
+			h.switchMode(0);
+		}
+	}
 
 	public void moveHand(Graphics g){
 		int x = mx-hand.getWidth(null)/2;
@@ -231,7 +287,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		h.move(x, y);
 	}
 
-	public void moveCircle(Graphics g){
+	public void moveCircle(){
 		if(h.getRect().contains(c1.x,c1.y)){
 			c1.isTouched();
 			h.switchMode(1);
@@ -299,47 +355,54 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(fadeINCHAR < 255){
 				fadeINCHAR += 5;
 			}
-			else if(charTransparency < 200){
-				charTransparency += 10;
-				charX += 5;
-				charY += 20;
-				if(charTransparency > 200){
-					charTransparency = 200;
-				}
-			}
-			else{
-				charSel = true;
-			}
+			// else if(charTransparency < 200){
+			// 	charTransparency += 10;
+			// 	charX += 5;
+			// 	charY += 20;
+			// 	if(charTransparency > 200){
+			// 		charTransparency = 200;
+			// 	}
+			// }
+			charSel = true;
 			g.setColor(new Color(255, 255, 255, fadeLIGHT));
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(new Color(150, 0, 0, fadeINCHAR));
 			g.fillRect(0, 0, getWidth(), getHeight());
-			g.setColor(new Color(10, 10, 10, charTransparency));
-			g.fillPolygon(new int[]{25,125-charX,1550,1450+charX}, new int[]{900,900-charY,500,500+charY}, 4);
-			g.setColor(new Color(255, 255, 255, 0));
+			g.setColor(new Color(10, 10, 10, 100));
+			g.fillRect(50,500,1500,400);
 
 			if(charSel){
 				for(int i = 0; i < 4; i++){
-					g.setColor(new Color(255, 255, 255, 100));
-					g.fillRect(375*i+75,550,300,300);
+					g.setColor(new Color(255, 255, 255, 200));
+					g.fillRect(375*i+85,550,300,300);
+					if(i == 0){
+						g.drawImage(new ImageIcon("Pics/luffy/pic.png").getImage(), 375*i+100, 550, 275, 275, null);
+					}
+					else if(i == 1){
+						g.drawImage(new ImageIcon("Pics/ichigo/pic.png").getImage(), 375*i+100, 550, 275, 275, null);
+					}
 				}
 				if(p1.playerName != ""){
 					if(p1.playerName == "luffy"){
+						System.out.println("luffy");
 						g.drawImage(luffy, 500, 225, luffy.getWidth(null)*3, luffy.getHeight(null)*3, null);
 					}
 					else if(p1.playerName == "ichigo"){
 						g.drawImage(ichigo, 500, 200, ichigo.getWidth(null), ichigo.getHeight(null), null);
-
+					}
+					else if(p1.playerName == "kakashi"){
+						g.drawImage(kakashi, 500, 200, kakashi.getWidth(null)*5, kakashi.getHeight(null)*5, null);
 					}
 				}
 				if(p2.playerName != ""){
 					if(p2.playerName == "luffy"){
-						System.out.println("luffy");
 						g.drawImage(luffy, 1100, 225, -(luffy.getWidth(null))*3, luffy.getHeight(null)*3, null);
 					}
 					else if(p2.playerName == "ichigo"){
-						System.out.println("ichigo");
 						g.drawImage(ichigo, 1100, 200, -(ichigo.getWidth(null)), ichigo.getHeight(null), null);
+					}
+					else if(p2.playerName == "kakashi"){
+						g.drawImage(kakashi, 1100, 200, -(kakashi.getWidth(null))*5, kakashi.getHeight(null)*5, null);
 					}
 				}
 				g.drawRect(getWidth()-200, 0, 200, 100);
