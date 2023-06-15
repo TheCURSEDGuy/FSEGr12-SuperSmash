@@ -20,7 +20,7 @@ public class circle {
                         circle = new ImageIcon("Pics/p2Circle.png").getImage();
                 }
                 radius = circle.getWidth(null)/2;
-                y = 900;
+                y = 200;
                 x = player == 1 ? 400 : 1200;
         }
 

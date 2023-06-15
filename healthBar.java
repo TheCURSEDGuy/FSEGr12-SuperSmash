@@ -15,7 +15,7 @@ public class healthBar {
         private int x,y;
         private int xPer;
         private int xHearts;
-        private int healthNum = 100;
+        public int healthNum = 100;
         private Color healthColor = Color.green;
         private int xhealth;
         private int xImage;
@@ -43,13 +43,26 @@ public class healthBar {
                 this.healthNum = health;
         }
 
+        public void healthDown(int health){
+                healthNum -= health;
+                if(healthNum < 0){
+                        healthNum = 0;
+                }
+        }
+
         public void heartDecrease(){
                 hearts--;
         }
 
         public void draw(Graphics g){
                 g.setColor(healthColor);
-                g.fillRect(xhealth, y+175, healthNum*3, 10);
+                if(dir == LEFT){
+                        g.fillRect(xhealth+(300-3*healthNum), y+175, 300-(300-3*healthNum), 10);
+                }
+                else{
+                        g.fillRect(xhealth, y+175, 3*healthNum, 10);
+
+                }
                 g.setColor(Color.red);
                 g.drawImage(health, x, y, null);
                 g.setFont(fontSys);
