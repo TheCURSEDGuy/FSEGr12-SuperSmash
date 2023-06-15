@@ -13,7 +13,6 @@ public class player {
         public int speedX = 2;
         public double xVel,yVel;
         private int player;
-        public int percentage;
         public int dir;
         Rectangle playerRect;
         String playerName = "";
@@ -35,7 +34,7 @@ public class player {
         public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
-        private final int WAIT = 8;
+        private final int WAIT = 4;
 
         // attacks
         private int typePunch = normalP;
@@ -111,8 +110,8 @@ public class player {
                 this.player = player;
                 dir = player == 1 ? RIGHT : LEFT;
                 System.out.println(dir);
-                health = new healthBar(dir);
                 pU = new powerUps(playerRect.width, playerRect.height, player);
+                health = new healthBar(dir, new ImageIcon("Pics/" + playerName + "/pic.png").getImage());
 
 
         }
@@ -177,7 +176,6 @@ public class player {
                 if(x > 1600 && x < 0){respawn();}
                 if(y > 1000){respawn();}
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
-                health.update(percentage);
 
         }
 
@@ -232,15 +230,11 @@ public class player {
                     yDist = 10;
                     dist = 10;
                 }
-            
-                double knockback = (dist * (percentage / 100.0) * dir) * knockbackScaling;
-                xVel += knockback;
+
+                xVel += 10;
                 yVel -= yDist;
                 frame = 0;
                 status = HIT;
-                percentage += 1 * dist;
-                double percentageIncrement = Math.abs(knockback) * 0.1;
-                percentage += percentageIncrement;
         }
 
         public void respawn(){
@@ -248,7 +242,6 @@ public class player {
                 x = player == 1 ? 200 : 1300;
                 y = 700;
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
-                percentage = 0;
                 status = IDLE;
                 frame = 0;
                 cooldownP.reset();
@@ -268,7 +261,6 @@ public class player {
                 double knockback = 15;
                 xVel += knockback;
                 isPunched = true;
-                percentage += 20;
         }
         public void waterAttacked(double dir){
             
@@ -281,7 +273,6 @@ public class player {
                 double knockback = 15;
                 xVel += knockback;
                 isPunched = true;
-                percentage += 10;
 
                 speedX = 1;
                 //timer needed
@@ -295,7 +286,6 @@ public class player {
                     }
 
                     isPunched = true;
-                    percentage += 1;
                     speedX = 0;
                     //timer needed
         }
@@ -308,7 +298,6 @@ public class player {
 
                 yVel -= 15;
                 isPunched = true;
-                percentage += 10;
         }
 
         public void dash(){
@@ -346,25 +335,21 @@ public class player {
 
         public void kakashiUltHit(){
                 isStunned = true;
-                percentage += 40;
                 //different sprite called kakashis "ult hit"
         }
 
         public void luffyUltPunch(){
                 isStunned = true;
-                percentage += 40;
                 //different sprite
         }
 
         public void aangUltHit(){
                 isStunned = true;
-                percentage += 40;
                 //different sprite
         }
 
         public void ichigoPeePeeUlt(){
                 isStunned = true;
-                percentage += 40;
         }
 
 
