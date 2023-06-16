@@ -37,7 +37,7 @@ public class player {
         public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4,  ATTACK1 = 5, ATTACK2 = 6, ULT = 7;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
-        private final int WAIT = 4;
+        private final int WAIT = 3;
 
         // attacks
         private int typePunch = normalP;
@@ -268,7 +268,7 @@ public class player {
                 health.heartDecrease();
                 health.healthNum = 100;
                 x = player == 1 ? 200 : 1300;
-                y = 700;
+                y = 600;
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
                 status = IDLE;
                 frame = 0;
@@ -501,7 +501,9 @@ public class player {
                                 yVel = 0;
                         }
                         y = plats[0].y - getRect().height+1;
-                        status = status != PUNCH ? IDLE : PUNCH;
+                        if(status != HIT && status != ATTACK1 && status != ATTACK2 && status != ULT){
+                                status = status != PUNCH ? IDLE : PUNCH;
+                        }
                         if(status == IDLE){
                                 if(frame >= stand.length){
                                         frame = 0;
