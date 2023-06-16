@@ -78,7 +78,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
 		back = new ImageIcon("Pics/background.gif").getImage();
 		platf = new ImageIcon("Pics/platform.png").getImage();
-		plat = new Rectangle(100,600,1400,200);
+		plat = new Rectangle(200,600,1200,200);
 		keys = new boolean[KeyEvent.KEY_LAST+1];
 
         String fName = "TITLEFONT.ttf";
@@ -135,6 +135,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			}
 			else{
 				char1 = false;
+				p1 = new player();
 			}
 			if(new Rectangle(75,550,300,300).contains(c2.x,c2.y)){
 				char2 = true;
@@ -154,6 +155,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			}
 			else{
 				char2 = false;
+				p2 = new player();
 			}
 					
 		}
@@ -476,6 +478,9 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 					else if(i == 1){
 						g.drawImage(new ImageIcon("Pics/ichigo/pic.png").getImage(), 375*i+100, 550, 275, 275, null);
 					}
+					else if(i == 2){
+						g.drawImage(new ImageIcon("Pics/kakashi/pic.png").getImage(), 375*i+100, 550, 275, 275, null);
+					}
 				}
 				if(p1.playerName != ""){
 					if(p1.playerName == "luffy"){
@@ -518,7 +523,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	if(screen == GAME){
 		
 		g.drawImage(back, -330, 0, back.getWidth(this)*3, back.getHeight(this)*3, this);
-		g.drawImage(platf, plat.x-20, plat.y-30, plat.width, plat.height+100, this);
+		g.drawImage(platf, plat.x-110, plat.y-30, plat.width+120, plat.height+100, this);
 		p1.draw(g);
 		p2.draw(g);
 
