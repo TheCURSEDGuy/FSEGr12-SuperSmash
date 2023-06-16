@@ -217,7 +217,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 					p1.hardAttack(p1, p2);
 				}
 				else if(p1.playerName == "aang"){
-					p1.waterAttack(p1, p2);
+					p1.hardAttack(p1, p2);
 				}
 				else if(p1.playerName == "kakashi"){
 					p1.hardAttack(p1, p2);
@@ -230,10 +230,10 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				else if(p2.playerName == "luffy"){
 					p2.hardAttack(p2, p1);
 				}
-				else if(p1.playerName == "aang"){
-					p2.waterAttack(p2, p1);
+				else if(p2.playerName == "aang"){
+					p2.hardAttack(p2, p1);
 				}
-				else if(p1.playerName == "kakashi"){
+				else if(p2.playerName == "kakashi"){
 					p2.hardAttack(p2, p1);
 				}
 			}
@@ -255,13 +255,13 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				if(p2.playerName == "ichigo"){
 					p2.multiHit(p2,p1);
 				}
-				else if(p1.playerName == "luffy"){
+				else if(p2.playerName == "luffy"){
 					p2.multiHit(p2, p1);
 				}
-				else if(p1.playerName == "aang"){
+				else if(p2.playerName == "aang"){
 					p2.multiHit(p2, p1);
 				}
-				else if(p1.playerName == "kakashi"){
+				else if(p2.playerName == "kakashi"){
 					p2.kickUp(p2, p1);
 				}
 			}
@@ -270,13 +270,18 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 					p1.ichigoUlt(p1, p2);
 				}
 				else if(p1.playerName == "luffy"){
-					p1.luffyUlt(p2);
+					if(p1.status == p1.ULT){
+						p1.status = p1.IDLE;
+					}
+					else{
+						p1.luffyUlt(p1, p2);
+					}
 				}
 				else if(p1.playerName == "aang"){
-					p1.aangUlt(p2);
+					p1.aangUlt(p1, p2);
 				}
 				else if(p1.playerName == "kakashi"){
-					p1.kakashiUlt(p2);
+					p1.kakashiUlt(p1, p2);
 				}
 			}
 			if(key == KeyEvent.VK_DOWN){
@@ -284,13 +289,18 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 					p2.ichigoUlt(p2, p1);
 				}
 				else if(p2.playerName == "luffy"){
-					p2.luffyUlt(p1);
+					if(p2.status == p2.ULT){
+						p2.status = p2.IDLE;
+					}
+					else{
+						p2.luffyUlt(p2, p1);
+					}
 				}
 				else if(p2.playerName == "aang"){
-					p2.aangUlt(p1);
+					p2.aangUlt(p2, p1);
 				}
-				else if(p1.playerName == "kakashi"){
-					p2.kakashiUlt(p1);
+				else if(p2.playerName == "kakashi"){
+					p2.kakashiUlt(p2, p1);
 				}
 			}
 			
