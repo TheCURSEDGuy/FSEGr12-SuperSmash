@@ -9,6 +9,8 @@ import java.io.File;
 import javax.swing.ImageIcon;
 
 public class player {
+        player thisPlayer;
+        player otherPlayer;
         public int x,y;
         public int speedX = 2;
         public double xVel,yVel;
@@ -31,7 +33,7 @@ public class player {
 
         // finals
         public final int LEFT = -1, RIGHT = 1, UP = 2, NONE = 3;
-        public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4, DASH = 5, ULT = 6, HARDATTACK = 7, MULTIHIT = 8, WATERATTACK = 9, KICK = 10, BOULDER = 11;
+        public final int IDLE = 0, WALK = 1, JUMP = 2, PUNCH = 3, HIT = 4,  ATTACK1 = 5, ATTACK2 = 6, ULT = 7;
         public final boolean P1 = true, P2 = false;
         private final int normalP = 3, poweredP = 10;
         private final int WAIT = 4;
@@ -51,7 +53,7 @@ public class player {
         private timer cooldownWaterAttack = new timer(2000);
         private timer cooldownHardAttack = new timer(2000);
         private timer cooldownMultiHit = new timer(2000);
-        private timer cooldownBoulder = new timer(2000);
+        private timer cooldownMH = new timer(2000);
 
         private timer cooldownUltKak = new timer(3000);
         private timer cooldownUltAang = new timer(3000);
@@ -134,16 +136,11 @@ public class player {
                 cooldownDash.update();
                 cooldownKick.update();
                 cooldownHardAttack.update();
-                cooldownBoulder.update();
                 cooldownMultiHit.update();
                 cooldownWaterAttack.update();
+                cooldownMH.update();
                 
 
-                if(isStunned){
-                        xVel = 0;
-                        yVel = 0;
-                        // timer
-                }
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
@@ -176,7 +173,7 @@ public class player {
                                 xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                         }
-        
+                        
                         if(keys[KeyEvent.VK_UP] && !jumped){
                                 frame = 0;
                                 status = JUMP;
@@ -187,8 +184,9 @@ public class player {
                 if(xVel > 10 && status != HIT){xVel = 10;}
                 if(xVel < -10 && status != HIT){xVel = -10;}
                 if(pT.getTime() > 10 && status == HIT){status = IDLE; frame = 0;}
-                if(xVel == 0 && yVel == 0 &&  status != HIT && status != PUNCH && status != JUMP && status != IDLE){status = IDLE; frame = 0;}
+                if(xVel == 0 && yVel == 0 &&  status != HIT && status != PUNCH && status != JUMP && status != IDLE && status != ATTACK1 && status != ATTACK2 && status != ULT){status = IDLE; frame = 0;}
                 if(xVel%1 != 0 && xVel > -1 && xVel < 1){xVel = 0;}
+                
                 x += xVel;
                 y += yVel;
                 if(x > 1600 && x < 0){respawn();}
@@ -197,6 +195,14 @@ public class player {
                 if(health.healthNum <= 0){
                         respawn();
                 }
+                if(status == ATTACK2 && (playerName == "ichigo" || playerName == "luffy" || playerName == "aang")){
+                        multiHit(thisPlayer, otherPlayer);
+                }
+                if(status == ULT && playerName == "luffy"){
+                        xVel = dir*50;
+                        luffyUlt(thisPlayer, otherPlayer);
+                }
+                
 
         }
 
@@ -278,11 +284,9 @@ public class player {
         
 
         public void dash(){
-                //timer to cooldown
-                //and timer to fit with animation
                 if(cooldownDash.getTime() > 50){
                         frame = 0;
-                        status = DASH;
+                        status = ATTACK1;
                         cooldownDash.reset();
                         if(dir == RIGHT){
                                 x += 150;
@@ -294,131 +298,159 @@ public class player {
         }
 
 
-
-        public void kakashiUltHit(){
-                isStunned = true;
-                //different sprite called kakashis "ult hit"
-        }
-
-        public void luffyUltPunch(){
-                isStunned = true;
-                //different sprite
-        }
-
-        public void aangUltHit(){
-                isStunned = true;
-                //different sprite
-        }
-
-        public void ichigoPeePeeUlt(){
-                isStunned = true;
-        }
-
-    public void multiHit(player bigSpoon, player littleSpoon){
-        Rectangle swordieSlash = new Rectangle(bigSpoon.getRect().x - (int)bigSpoon.getRect().getHeight(), bigSpoon.getRect().y, 2*bigSpoon.getRect().width, bigSpoon.getRect().height);
-        if(swordieSlash.intersects(littleSpoon.getRect())){
+    public void multiHit(player attacker, player victim){
+        Rectangle player = new Rectangle(attacker.getRect().x - (int)attacker.getRect().getHeight(), attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height);
+        if(attacker.status == ATTACK2 && player.intersects(victim.getRect())){                
+                victim.health.healthDown(2);
+                victim.frame = 0;
+                victim.status = HIT;
+                victim.pT.reset();
+                victim.yVel -= 5;
+                victim.isPunched = true; 
 
         }
+        otherPlayer = victim;
+        thisPlayer = attacker;
+        if(cooldownMultiHit.getTime() > 50){
+                attacker.frame = 0;
+                cooldownMultiHit.reset();
+                attacker.status = ATTACK2;
+                
+                if(attacker.status == IDLE){
+                        cooldownMultiHit.reset();
+                }
+        }
+
+        victim.isPunched = false;
     }
 
-    public void hardAttack(player bigSpoon, player littleSpoon){
-        Rectangle player = bigSpoon.dir == bigSpoon.RIGHT ? new Rectangle(bigSpoon.getRect().x, bigSpoon.getRect().y, 2*bigSpoon.getRect().width, bigSpoon.getRect().height) : new Rectangle(bigSpoon.getRect().x - bigSpoon.getRect().width, bigSpoon.getRect().y, 2*bigSpoon.getRect().width, bigSpoon.getRect().height);
-        if(player.intersects(littleSpoon.getRect())){
-                if(bigSpoon.dir == RIGHT){
-                        littleSpoon.xVel += 15;
+    public void hardAttack(player attacker, player victim){
+        Rectangle player = attacker.dir == attacker.RIGHT ? new Rectangle(attacker.getRect().x, attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height) : new Rectangle(attacker.getRect().x - attacker.getRect().width, attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height);
+        if(cooldownHardAttack.getTime() > 50){
+                attacker.frame = 0;
+                attacker.status = ATTACK1;
+                cooldownHardAttack.reset();
+                if(player.intersects(victim.getRect())){
+                        if(attacker.dir == RIGHT){
+                                victim.xVel += 15;
+                        }
+                        else{
+                                victim.xVel -= 15;
+                        }
+                        victim.yVel -= 8;
+                        victim.health.healthDown(5);
+                        victim.isPunched = true;
+                        victim.pT.reset();
+                        victim.frame = 0;
+                        victim.status = HIT;
                 }
-                else{
-                        littleSpoon.xVel -= 15;
-                }
-                littleSpoon.isPunched = true;
         }
-        littleSpoon.isPunched = false;
+        victim.isPunched = false;
     }
 
 
     public void kickUp(player kakashi, player victim){
         Rectangle player = kakashi.dir == kakashi.RIGHT ? new Rectangle(kakashi.getRect().x, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height) : new Rectangle(kakashi.getRect().x - kakashi.getRect().width, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height);
         if(cooldownKick.getTime() > 50){
-                frame = 0;
-                status = KICK;
+                kakashi.frame = 0;
+                kakashi.status = ATTACK2;
                 cooldownKick.reset();
-                kakashi.status = KICK;
                 if(player.intersects(victim.getRect())){
-                    victim.yVel -= 30;
+                    victim.frame = 0;
+                    victim.pT.reset();
+                    victim.status = HIT;
+                    victim.yVel -= 10;
                     victim.isPunched = true;
+                    victim.health.healthDown(5);
                 }
-                victim.isPunched = false;
         }
+        victim.isPunched = false;
 }
 
-    public void luffyBoulder(player luffy, player victim){
+    
+
+    
+
+
+
+
+
+    
+    public void kakashiUlt(player kakashi, player victim){
+        if(cooldownUltKak.getTime() > 200){
+
+                kakashi.frame = 0;
+                kakashi.status = ULT;
+                kakashi.pT.reset();
+                cooldownUltKak.reset();
+                //sprite under victim
+                victim.health.healthDown(15);
+        }
+    }
+
+    public void aangUlt(player aang, player victim){
+        if(cooldownUltAang.getTime() > 200){
+                aang.frame = 0;
+                aang.status = ULT;
+                aang.pT.reset();
+                cooldownUltAang.reset();
+                //sprite under victim
+                victim.health.healthDown(15);
+        }
+    }
+
+    public void luffyUlt(player luffy, player victim){
+        otherPlayer = victim;
+        thisPlayer = luffy;
         Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
-        if(cooldownBoulder.getTime() > 100){
-                if(player.intersects(victim.getRect())){
-                    if(luffy.dir == RIGHT){
-                                victim.xVel += 30;
-                        }
-                        else{
-                                victim.xVel -= 30;
-                        }
-                        victim.isPunched = true;
+        if(luffy.status == ULT && player.intersects(victim.getRect())){
+            if(luffy.dir == RIGHT){
+                        victim.xVel += 50;
                 }
-                // make so he can cancel
+                else{
+                        victim.xVel -= 50;
+                }
+                victim.yVel -= 10;
+                victim.isPunched = true;
+                victim.health.healthDown(15);
+        }
+        if(cooldownUltLuffy.getTime() > 100){
+                luffy.frame = 0;
+                luffy.status = ULT;
+                luffy.pT.reset();
+                cooldownUltLuffy.reset();
+                
         }
         victim.isPunched = false;
+
     }
 
-    public void waterAttack(player aang, player victim){
-        Rectangle player = aang.dir == aang.RIGHT ? new Rectangle(aang.getRect().x, aang.getRect().y, 3*aang.getRect().width, aang.getRect().height) : new Rectangle(aang.getRect().x - aang.getRect().width, aang.getRect().y, 2*aang.getRect().width, aang.getRect().height);
-        if(cooldownWaterAttack.getTime() > 50){
-                frame = 0;
-                status = WATERATTACK;
-                cooldownWaterAttack.reset();
-                if(player.intersects(victim.getRect())){
-                        if(aang.dir == RIGHT){
-                                victim.xVel += 15;
-                        }
-                        else{
-                                victim.xVel -= 15;
-                        }
-                        victim.isPunched = true;
-
-                        victim.speedX = 1;
-                        //timer needed
-                }
-        }
-        victim.isPunched = false;
-    }
-
-
-
-
-
-
-
-
-    public void kakashiUlt(player victim){
-        victim.kakashiUltHit();
-    }
-
-
-    public void luffyUlt(player victim){
-        victim.luffyUltPunch();
-    }
-
-    public void aangUlt(player victim){
-        victim.aangUltHit();
-    }
 
     public void ichigoUlt(player ichigo, player victim){
-        int ogX = ichigo.x;
-        //timer
-        ichigo.x = victim.x - victim.getRect().width;
-        victim.ichigoPeePeeUlt();
-        //animation
-        //timer
-        ichigo.x = ogX;
+        if(cooldownUltIchigo.getTime() > 200){
+                ichigo.frame = 0;
+                ichigo.status = ULT;
+                ichigo.pT.reset();
+                cooldownUltIchigo.reset();
+        
+                int originalgX = ichigo.x;
+
+                //timer
+                ichigo.x = victim.x - victim.getRect().width;
+                ichigo.dir = RIGHT;
+        
+                //animation
+                //timer
+                ichigo.x = originalgX;
+        
+                victim.health.healthDown(15);
+        }
     }
+
+
+
+
+
 
         
         public void friction(){
@@ -433,11 +465,12 @@ public class player {
         public void gravity(Rectangle plat, Rectangle[] plats){
                 if(getRect().intersects(plat)){
                         jumped = false;
+                        
                         if(status != HIT){
                                 yVel = 0;
                         }
                         y = plat.y - getRect().height+5;
-                        if(status != HIT){
+                        if(status != HIT && status != ATTACK1 && status != ATTACK2 && status != ULT){
                                 status = status != PUNCH ? IDLE : PUNCH;
                         }
                         if(status == IDLE){
@@ -450,6 +483,7 @@ public class player {
                                         frame = 0;
                                 }
                         }
+                        
                 }
                 else if(intersectList(plats) && yVel >= 0){
                         jumped = false;
@@ -510,7 +544,7 @@ public class player {
                 }
         }
 
-        public void punch(){
+        public void punch(Image[] punch){
                 if(cooldown % WAIT == 0){
                         frame++;
                         if(frame >= punch.length){
@@ -519,6 +553,10 @@ public class player {
                         }
                 }
         }
+
+        
+
+        
 
         public void draw(Graphics g) {
                 health.draw(g);
@@ -535,7 +573,7 @@ public class player {
                         }
                 }
                 else if(status == PUNCH){
-                        punch();
+                        punch(punch);
                         if (dir == RIGHT && status != IDLE){
                                 g.drawImage(punch[frame], x, y, null);
                         } 
@@ -574,7 +612,35 @@ public class player {
                                 g2d.drawImage(run[frame], x + run[frame].getWidth(null), y, -run[frame].getWidth(null), run[frame].getHeight(null), null);
                         }
                 }
-                
-                
+                else if(status == ATTACK1){
+                        punch(attack1);
+                        if (dir == RIGHT){
+                                g.drawImage(attack1[frame], x, y, null);
+                        } 
+                        else{
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.drawImage(attack1[frame], x + attack1[frame].getWidth(null), y, -attack1[frame].getWidth(null), attack1[frame].getHeight(null), null);
+                        }
+                }
+                else if(status == ATTACK2){
+                        punch(attack2);
+                        if (dir == RIGHT){
+                                g.drawImage(attack2[frame], x, y, null);
+                        } 
+                        else{
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.drawImage(attack2[frame], x + attack2[frame].getWidth(null), y, -attack2[frame].getWidth(null), attack2[frame].getHeight(null), null);
+                        }
+                }
+                else if(status == ULT){
+                        punch(ult);
+                        if (dir == RIGHT){
+                                g.drawImage(ult[frame], x, y, null);
+                        } 
+                        else{
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.drawImage(ult[frame], x + ult[frame].getWidth(null), y, -ult[frame].getWidth(null), ult[frame].getHeight(null), null);
+                        }
+                }
         }
 }
