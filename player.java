@@ -22,6 +22,7 @@ public class player {
 
         // booleans
         boolean jumped = false;
+        boolean topPlat = false;
 
 
         // Timers
@@ -116,7 +117,7 @@ public class player {
                 this.playerName = playerName;
 
                 x = player == 1 ? 200 : 1300;
-                y = 700;
+                y = 600;
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
                 this.player = player;
                 dir = player == 1 ? RIGHT : LEFT;
@@ -144,6 +145,7 @@ public class player {
                         yVel = 0;
                         // timer
                 }
+                
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
@@ -390,13 +392,6 @@ public class player {
         victim.isPunched = false;
     }
 
-
-
-
-
-
-
-
     public void kakashiUlt(player victim){
         victim.kakashiUltHit();
     }
@@ -431,6 +426,15 @@ public class player {
         }
 
         public void gravity(Rectangle plat, Rectangle[] plats){
+                // System.out.println(y + getRect().height+40 + " " + plat.y);
+                // if(y+getRect().height< plat.y){
+                //         topPlat = true;
+                // }
+
+                // else{
+                //         topPlat = false;
+                // }
+                
                 if(getRect().intersects(plat)){
                         jumped = false;
                         if(status != HIT){
@@ -469,7 +473,7 @@ public class player {
                                 }
                         }
                 }
-                else{
+                if(!getRect().intersects(plat) && !intersectList(plats) && status != HIT){
                         yVel += 1;
                 }
         }
