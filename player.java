@@ -200,7 +200,7 @@ public class player {
                         multiHit(thisPlayer, otherPlayer);
                 }
                 if(status == ULT && playerName == "luffy"){
-                        xVel = dir*50;
+                        xVel = dir*10;
                         luffyUlt(thisPlayer, otherPlayer);
                 }
                 
