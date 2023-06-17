@@ -1,5 +1,9 @@
+import java.applet.AudioClip;
+import java.io.File;
+
 public class effects {
     
+
     public void jump(player p){
         //when button is pressed
     }
