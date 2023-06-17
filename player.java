@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 
 public class player {
         player thisPlayer;
@@ -81,19 +80,6 @@ public class player {
 
 
 
-        // AUDIOS
-
-        SoundEffect woosh = new SoundEffect("Sounds/woosh.wav");
-	SoundEffect simpleHit = new SoundEffect("Sounds/simpleHit.wav");
-	SoundEffect hardHit = new SoundEffect("Sounds/hardHit.wav");
-	SoundEffect gameplayNasheed = new SoundEffect("Sounds/gameplayNasheed.wav");
-	SoundEffect endScreenNasheed = new SoundEffect("Sounds/endScreenNasheed.wav");
-	SoundEffect laserbeamSound = new SoundEffect("Sounds/laserbeamSound.wav");
-	SoundEffect luffyUlt = new SoundEffect("Sounds/luffyUlt.wav");
-	SoundEffect ichigoUlt = new SoundEffect("Sounds/ichigoUlt.wav");
-	SoundEffect kakashiUlt = new SoundEffect("Sounds/kakashiUlt.wav");
-	SoundEffect aangUlt = new SoundEffect("Sounds/aangUlt.wav");
-	SoundEffect winnerSound = new SoundEffect("Sounds/winnerSound.wav");
 
         // powerUps pU;
 
@@ -272,7 +258,6 @@ public class player {
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
                 if(health.healthNum <= 0){
                         respawn();
-                        laserbeamSound.play();
                 }
                 if(status == ATTACK2 && (playerName == "ichigo" || playerName == "luffy" || playerName == "aang")){
                         multiHit(thisPlayer, otherPlayer);
@@ -341,7 +326,6 @@ public class player {
                 yVel -= yDist;
                 frame = 0;
                 status = HIT;
-                simpleHit.play();
         }
 
         public void respawn(){
@@ -375,7 +359,6 @@ public class player {
                         else{
                                 x -= 150;
                         }
-                        woosh.play();
                 }
         }
 
@@ -388,7 +371,6 @@ public class player {
                 victim.status = HIT;
                 victim.pT.reset();
                 victim.isPunched = true;
-                simpleHit.play();
 
         }
         otherPlayer = victim;
@@ -425,8 +407,7 @@ public class player {
                         victim.pT.reset();
                         victim.frame = 0;
                         victim.status = HIT;
-                        hardHit.play();
-                }
+                        }
         }
         victim.isPunched = false;
     }
@@ -445,7 +426,6 @@ public class player {
                     victim.yVel -= 10;
                     victim.isPunched = true;
                     victim.health.healthDown(5);
-                    hardHit.play();
                 }
         }
         victim.isPunched = false;
@@ -473,7 +453,6 @@ public class player {
                 victim.frame=0;
                 victim.status = HIT;
                 victim.pT.reset();
-                kakashiUlt.play();
         }
     }
 
@@ -488,7 +467,6 @@ public class player {
                 victim.frame=0;
                 victim.status = HIT;
                 victim.pT.reset();
-                aangUlt.play();
         }
     }
 
@@ -497,7 +475,6 @@ public class player {
         thisPlayer = luffy;
         Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
         if(luffy.status == ULT){
-                luffyUlt.play();
                 if(player.intersects(victim.getRect())){
                         if(luffy.dir == RIGHT){
                                 victim.xVel += 20;
@@ -511,7 +488,6 @@ public class player {
                         victim.frame = 0;
                         victim.status = HIT;
                         victim.pT.reset();
-                        hardHit.play();
                 }
 
         }
@@ -547,7 +523,6 @@ public class player {
                 victim.frame = 0;
                 victim.status = HIT;
                 victim.pT.reset();
-                ichigoUlt.play();
         }
     }
 

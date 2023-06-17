@@ -507,6 +507,20 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			g.setColor(new Color(255, 255, 255, polTransparency));
 			g.fillPolygon(new int[]{0,polX,getWidth(),getWidth(),getWidth()-polX,0}, new int[]{0,0,getHeight()-polX,getHeight(),getHeight(),polY}, 6);
         	}
+			g.setColor(new Color(255, 255, 255, txtTransparency));
+			g.setFont(fontLocal2);
+
+			g.drawString("PLAYER ONE CONTROLS:", getWidth()/8, 550);
+			g.drawString("A & E - MOVE", getWidth()/8, 600);
+			g.drawString("W - JUMP", getWidth()/8, 650);
+			g.drawString("Q - PUNCH, E & R for ABILITIES", getWidth()/8, 700);
+			g.drawString("S for ULTIMATE ABILITY!", getWidth()/8, 750);
+
+			g.drawString("PLAYER TWO CONTROLS:", getWidth() -getWidth()/4, 550);
+			g.drawString("LEFT & RIGHT - MOVE", getWidth() -getWidth()/4, 600);
+			g.drawString("UP - JUMP", getWidth() -getWidth()/4, 650);
+			g.drawString("COMMA - PUNCH, PERIOD & SLASH for ABILITIES", getWidth() - getWidth()/4, 700);
+			g.drawString("DOWN for ULTIMATE ABILITY!", getWidth() -getWidth()/4, 750);
 		if(screen == CHARSELECT){
 			if(fadeLIGHT > 0){
 				fadeLIGHT -= 5;
@@ -589,10 +603,14 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				g.setColor(new Color(255, 255, 255, 200));
 				g.fillRect(0,0,200,100);
 				g.fillRect(getWidth()-200, 0, 200, 100);
+				
 				g.setFont(fontLocal3);
 				g.setColor(Color.black);
 				drawString(g, "NEXT", getWidth()-200, 0);
 				drawString(g, "BACK", 0, 0);
+				g.setFont(fontLocal2);
+				g.setColor(Color.WHITE);
+				drawString(g, "DRAG CIRCLE ONTO YOUR CHOSEN PLAYER!", 300, 0);
 				// g.setColor(Color.gray);
 				// g.fillPolygon(new int[]{100,300,500,300}, new int[]{100,100,400,400}, 4);
 				// g.setColor(Color.black);
@@ -633,6 +651,10 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			g.setColor(Color.black);
 			drawString(g, "NEXT", getWidth()-200, 0);
 			drawString(g, "BACK", 0, 0);
+			g.setFont(fontLocal2);
+			g.setColor(Color.WHITE);
+			drawString(g, "CHOOSE WHICH MAP!", 300, 0);
+
 			moveHand(g);
 			h.draw(g);
 		}
