@@ -79,6 +79,24 @@ public class player {
         Image[] hit;
         Image[] ultHit;
 
+
+
+        // AUDIOS
+
+        SoundEffect woosh = new SoundEffect("Sounds/woosh.wav");
+	SoundEffect simpleHit = new SoundEffect("Sounds/simpleHit.wav");
+	SoundEffect hardHit = new SoundEffect("Sounds/hardHit.wav");
+	SoundEffect gameplayNasheed = new SoundEffect("Sounds/gameplayNasheed.wav");
+	SoundEffect endScreenNasheed = new SoundEffect("Sounds/endScreenNasheed.wav");
+	SoundEffect laserbeamSound = new SoundEffect("Sounds/laserbeamSound.wav");
+	SoundEffect luffyUlt = new SoundEffect("Sounds/luffyUlt.wav");
+	SoundEffect ichigoUlt = new SoundEffect("Sounds/ichigoUlt.wav");
+	SoundEffect kakashiUlt = new SoundEffect("Sounds/kakashiUlt.wav");
+	SoundEffect aangUlt = new SoundEffect("Sounds/aangUlt.wav");
+	SoundEffect winnerSound = new SoundEffect("Sounds/winnerSound.wav");
+
+        // powerUps pU;
+
         public player(){
                 playerName = "";
         }
@@ -254,6 +272,7 @@ public class player {
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
                 if(health.healthNum <= 0){
                         respawn();
+                        laserbeamSound.play();
                 }
                 if(status == ATTACK2 && (playerName == "ichigo" || playerName == "luffy" || playerName == "aang")){
                         multiHit(thisPlayer, otherPlayer);
@@ -477,21 +496,23 @@ public class player {
         otherPlayer = victim;
         thisPlayer = luffy;
         Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
-        luffyUlt.play();
-        if(luffy.status == ULT && player.intersects(victim.getRect())){
-            if(luffy.dir == RIGHT){
-                        victim.xVel += 20;
+        if(luffy.status == ULT){
+                luffyUlt.play();
+                if(player.intersects(victim.getRect())){
+                        if(luffy.dir == RIGHT){
+                                victim.xVel += 20;
+                        }
+                        else{
+                                victim.xVel -= 20;
+                        }
+                        victim.yVel -= 15;
+                        victim.isPunched = true;
+                        victim.health.healthDown(10);
+                        victim.frame = 0;
+                        victim.status = HIT;
+                        victim.pT.reset();
+                        hardHit.play();
                 }
-                else{
-                        victim.xVel -= 20;
-                }
-                victim.yVel -= 15;
-                victim.isPunched = true;
-                victim.health.healthDown(10);
-                victim.frame = 0;
-                victim.status = HIT;
-                victim.pT.reset();
-                hardHit.play();
 
         }
         if(cooldownUltLuffy.getTime() > 300){
