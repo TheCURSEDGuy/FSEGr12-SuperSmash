@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 public class player {
         player thisPlayer;
@@ -82,17 +83,15 @@ public class player {
 
         // AUDIOS
 
-        SoundEffect woosh = new SoundEffect("Sounds/woosh.wav");
-	SoundEffect simpleHit = new SoundEffect("Sounds/simpleHit.wav");
-	SoundEffect hardHit = new SoundEffect("Sounds/hardHit.wav");
-	SoundEffect gameplayNasheed = new SoundEffect("Sounds/gameplayNasheed.wav");
-	SoundEffect endScreenNasheed = new SoundEffect("Sounds/endScreenNasheed.wav");
-	SoundEffect laserbeamSound = new SoundEffect("Sounds/laserbeamSound.wav");
-	SoundEffect luffyUlt = new SoundEffect("Sounds/luffyUlt.wav");
-	SoundEffect ichigoUlt = new SoundEffect("Sounds/ichigoUlt.wav");
-	SoundEffect kakashiUlt = new SoundEffect("Sounds/kakashiUlt.wav");
-	SoundEffect aangUlt = new SoundEffect("Sounds/aangUlt.wav");
-	SoundEffect winnerSound = new SoundEffect("Sounds/winnerSound.wav");
+        SoundEffect woosh;
+	SoundEffect simpleHit;
+	SoundEffect hardHit;
+	SoundEffect laserbeamSound;
+	SoundEffect luffyUlt;
+	SoundEffect ichigoUlt;
+	SoundEffect kakashiUlt;
+	SoundEffect aangUlt;
+	SoundEffect winnerSound;
 
         // powerUps pU;
 
@@ -102,6 +101,7 @@ public class player {
 
 
         public player(int player, String playerName){
+                
                 attack1 = new Image[new File("Pics/" + playerName + "/attack1").listFiles().length];
                 attack2 = new Image[new File("Pics/" + playerName + "/attack2").listFiles().length];
                 jump = new Image[new File("Pics/" + playerName + "/jump").listFiles().length];
@@ -771,3 +771,7 @@ public class player {
                 }
         }
 }
+
+
+
+
