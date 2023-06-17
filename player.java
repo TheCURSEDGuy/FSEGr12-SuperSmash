@@ -19,12 +19,14 @@ public class player {
         Rectangle playerRect;
         String playerName = "";
         int frame = 0;
+        int frameUlt = 0;
         public int status;
         public boolean isStunned = false;
 
         // booleans
         boolean jumped = false;
         boolean topPlat = false;
+        boolean ultSpawn = false;
 
 
         // Timers
@@ -56,10 +58,11 @@ public class player {
         private timer cooldownMultiHit = new timer(2000);
         private timer cooldownMH = new timer(2000);
 
-        private timer cooldownUltKak = new timer(3000);
-        private timer cooldownUltAang = new timer(3000);
-        private timer cooldownUltIchigo = new timer(3000);
-        private timer cooldownUltLuffy = new timer(3000);
+        private timer cooldownUltKak = new timer(0);
+        private timer cooldownUltAang = new timer(0);
+        private timer cooldownUltIchigo = new timer(0);
+        private timer cooldownUltLuffy = new timer(0);
+        private timer cooldownIchigoDashUlt = new timer(0);
 
         // health
         healthBar health;
@@ -73,6 +76,7 @@ public class player {
         Image[] stand;
         Image[] ult;
         Image[] hit;
+        Image[] ultHit;
 
         // powerUps pU;
 
@@ -90,7 +94,11 @@ public class player {
                 stand = new Image[new File("Pics/" + playerName + "/stand").listFiles().length];
                 ult = new Image[new File("Pics/" + playerName + "/ult").listFiles().length];
                 hit = new Image[new File("Pics/" + playerName + "/hit").listFiles().length];
+                ultHit = new Image[new File("Pics/ultHit").listFiles().length];
 
+                for(int i = 0; i < ultHit.length; i++){
+                        ultHit[i] = new ImageIcon("Pics/ultHit/" + i + ".png").getImage();
+                }
                 for(int i = 0; i < attack1.length; i++){
                         attack1[i] = new ImageIcon("Pics/" + playerName + "/attack1/" + i + ".png").getImage();
                 }
@@ -140,6 +148,11 @@ public class player {
                 cooldownMultiHit.update();
                 cooldownWaterAttack.update();
                 cooldownMH.update();
+                cooldownUltAang.update();
+                cooldownUltIchigo.update();
+                cooldownUltKak.update();
+                cooldownUltLuffy.update();
+                cooldownIchigoDashUlt.update();
                 
 
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
@@ -302,11 +315,10 @@ public class player {
     public void multiHit(player attacker, player victim){
         Rectangle player = new Rectangle(attacker.getRect().x - (int)attacker.getRect().getHeight(), attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height);
         if(attacker.status == ATTACK2 && player.intersects(victim.getRect())){                
-                victim.health.healthDown(2);
+                victim.health.healthDown(1);
                 victim.frame = 0;
                 victim.status = HIT;
                 victim.pT.reset();
-                victim.yVel -= 5;
                 victim.isPunched = true; 
 
         }
@@ -378,25 +390,32 @@ public class player {
 
     
     public void kakashiUlt(player kakashi, player victim){
-        if(cooldownUltKak.getTime() > 200){
+        if(cooldownUltKak.getTime() > 300){
 
                 kakashi.frame = 0;
                 kakashi.status = ULT;
                 kakashi.pT.reset();
                 cooldownUltKak.reset();
                 //sprite under victim
-                victim.health.healthDown(15);
+                victim.health.healthDown(10);
+                victim.ultSpawn = true;
+                victim.frame=0;
+                victim.status = HIT;
+                victim.pT.reset();
         }
     }
 
     public void aangUlt(player aang, player victim){
-        if(cooldownUltAang.getTime() > 200){
+        if(cooldownUltAang.getTime() > 300){
                 aang.frame = 0;
                 aang.status = ULT;
                 aang.pT.reset();
                 cooldownUltAang.reset();
-                //sprite under victim
-                victim.health.healthDown(15);
+                victim.ultSpawn = true;
+                victim.health.healthDown(10);
+                victim.frame=0;
+                victim.status = HIT;
+                victim.pT.reset();
         }
     }
 
@@ -406,16 +425,19 @@ public class player {
         Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
         if(luffy.status == ULT && player.intersects(victim.getRect())){
             if(luffy.dir == RIGHT){
-                        victim.xVel += 50;
+                        victim.xVel += 20;
                 }
                 else{
-                        victim.xVel -= 50;
+                        victim.xVel -= 20;
                 }
-                victim.yVel -= 10;
+                victim.yVel -= 15;
                 victim.isPunched = true;
-                victim.health.healthDown(15);
+                victim.health.healthDown(10);
+                victim.frame = 0;
+                victim.status = HIT;
+                victim.pT.reset();
         }
-        if(cooldownUltLuffy.getTime() > 100){
+        if(cooldownUltLuffy.getTime() > 300){
                 luffy.frame = 0;
                 luffy.status = ULT;
                 luffy.pT.reset();
@@ -428,23 +450,24 @@ public class player {
 
 
     public void ichigoUlt(player ichigo, player victim){
-        if(cooldownUltIchigo.getTime() > 200){
+            System.out.println(cooldownUltIchigo.getTime());
+        if(cooldownUltIchigo.getTime() > 300){
                 ichigo.frame = 0;
                 ichigo.status = ULT;
                 ichigo.pT.reset();
                 cooldownUltIchigo.reset();
         
-                int originalgX = ichigo.x;
 
-                //timer
+                cooldownIchigoDashUlt.reset();
                 ichigo.x = victim.x - victim.getRect().width;
                 ichigo.dir = RIGHT;
         
-                //animation
-                //timer
-                ichigo.x = originalgX;
+                
         
-                victim.health.healthDown(15);
+                victim.health.healthDown(10);
+                victim.frame = 0;
+                victim.status = HIT;
+                victim.pT.reset();
         }
     }
 
@@ -566,6 +589,16 @@ public class player {
                 }
         }
 
+        public void ultHit(Image[] ultHit){
+                if(cooldown % WAIT == 0){
+                        frameUlt++;
+                        if(frameUlt >= ultHit.length){
+                                frameUlt = 0;
+                                ultSpawn = false;
+                        }
+                }
+        }
+
         
 
         
@@ -653,6 +686,11 @@ public class player {
                                 Graphics2D g2d = (Graphics2D) g;
                                 g2d.drawImage(ult[frame], x + ult[frame].getWidth(null), y, -ult[frame].getWidth(null), ult[frame].getHeight(null), null);
                         }
+                }
+                if(ultSpawn){
+                        ultHit(ultHit);
+                        g.drawImage(ultHit[frameUlt], x, y + 40, null);
+                
                 }
         }
 }
