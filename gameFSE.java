@@ -1,13 +1,11 @@
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
-import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.*;
-import javax.sound.sampled.FloatControl;
 
 
 public class gameFSE extends JFrame{
@@ -36,7 +34,18 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
 
 	// AUDIO
-	SoundEffect woosh = new SoundEffect("Sounds/woosh.wav");
+
+	SoundEffect gameplayNasheed = new SoundEffect("Sounds/gameplayNasheed.wav");
+	SoundEffect endScreenNasheed = new SoundEffect("Sounds/endScreenNasheed.wav");
+	SoundEffect laserbeamSound = new SoundEffect("Sounds/laserbeamSound.wav");
+	SoundEffect winnerSound = new SoundEffect("Sounds/winnerSound.wav");
+
+
+
+
+
+
+
 
 
 	
@@ -256,7 +265,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(key == KeyEvent.VK_E){
 				if(p1.playerName == "ichigo"){
 					p1.dash();
-					woosh.play();
 				}
 				else if(p1.playerName == "luffy"){
 					p1.hardAttack(p1, p2);
