@@ -1,8 +1,14 @@
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.AudioSystem;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.*;
+import javax.sound.sampled.FloatControl;
+
 
 public class gameFSE extends JFrame{
 	GamePanel game= new GamePanel();
@@ -30,8 +36,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
 
 	// AUDIO
-	File woosh = new File("Sounds/woosh.wav");
-    AudioClip wooshS;
+	SoundEffect woosh = new SoundEffect("Sounds/woosh.wav");
 
 
 	
@@ -90,6 +95,8 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	Image p2Menu = new ImageIcon("Pics/player2Menu.png").getImage();
 	
 	public GamePanel(){
+
+
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
 		back = new ImageIcon("Pics/background.gif").getImage();
 		platf = new ImageIcon("Pics/platform.png").getImage();
@@ -248,6 +255,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(key == KeyEvent.VK_E){
 				if(p1.playerName == "ichigo"){
 					p1.dash();
+					woosh.play();
 				}
 				else if(p1.playerName == "luffy"){
 					p1.hardAttack(p1, p2);
@@ -643,4 +651,26 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	}
     }
 }
-			
+	
+
+class SoundEffect{
+    private Clip c;
+    public SoundEffect(String filename){
+        setClip(filename);
+    }
+    public void setClip(String filename){
+        try{
+            File f = new File(filename);
+            c = AudioSystem.getClip();
+            c.open(AudioSystem.getAudioInputStream(f));
+        } catch(Exception e){ System.out.println("error"); }
+    }
+    public void play(){
+        c.setFramePosition(0);
+        c.start();
+    }
+    public void stop(){
+        c.stop();
+    }
+}
+
