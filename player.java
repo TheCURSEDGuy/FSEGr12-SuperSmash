@@ -199,16 +199,16 @@ public class player {
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
-                                walk();
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                                 xVel += speedX;
+                                walk();
                         }
                         if(keys[KeyEvent.VK_A]){
-                                walk();
                                 dir = LEFT;
                                 xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
+                                walk();
 
                         }
         
@@ -221,16 +221,17 @@ public class player {
                 }
                 if(player == -1 && status != HIT){
                         if(keys[KeyEvent.VK_RIGHT]){
-                                walk();
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                                 xVel += speedX;
+                                walk();
                         }
                         if(keys[KeyEvent.VK_LEFT]){
-                                walk();
                                 dir = LEFT;
                                 xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
+                                walk();
+
                         }
                         
                         if(keys[KeyEvent.VK_UP] && !jumped){
@@ -673,6 +674,8 @@ public class player {
                         }
                 }
                 else if(status == HIT){
+
+                        System.out.println(frame + " " + playerName);
                         hit();
                         if (dir == RIGHT){
                                 g.drawImage(hit[frame], x, y, null);
