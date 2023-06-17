@@ -79,22 +79,6 @@ public class player {
         Image[] hit;
         Image[] ultHit;
 
-
-
-        // AUDIOS
-
-        SoundEffect woosh;
-	SoundEffect simpleHit;
-	SoundEffect hardHit;
-	SoundEffect laserbeamSound;
-	SoundEffect luffyUlt;
-	SoundEffect ichigoUlt;
-	SoundEffect kakashiUlt;
-	SoundEffect aangUlt;
-	SoundEffect winnerSound;
-
-        // powerUps pU;
-
         public player(){
                 playerName = "";
         }
