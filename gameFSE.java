@@ -28,6 +28,13 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
     	int frameCnt = 0;
 	Font fontLocal=null, fontSys=null, fontLocal2 = null, fontLocal3 = null;
 
+
+	// AUDIO
+	File woosh = new File("Sounds/woosh.wav");
+    AudioClip wooshS;
+
+
+	
 	// INTRO
 	int txtX = -400;
 	int txtTransparency = 0;
