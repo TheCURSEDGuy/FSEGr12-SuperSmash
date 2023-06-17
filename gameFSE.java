@@ -33,14 +33,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	Font fontLocal=null, fontSys=null, fontLocal2 = null, fontLocal3 = null;
 
 
-	// AUDIO
-
-	SoundEffect gameplayNasheed = new SoundEffect("Sounds/gameplayNasheed.wav");
-	SoundEffect endScreenNasheed = new SoundEffect("Sounds/endScreenNasheed.wav");
-	SoundEffect laserbeamSound = new SoundEffect("Sounds/laserbeamSound.wav");
-	SoundEffect winnerSound = new SoundEffect("Sounds/winnerSound.wav");
-
-
 
 
 
