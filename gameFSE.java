@@ -48,6 +48,10 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	boolean char1 = false;
 	boolean char2 = false;
 	int mx, my;
+	boolean mapSelect = false;
+	int mapSelected = 5;
+	boolean backSelected = false;
+	timer backTimer = new timer(10);
 
 	//OBJECTS
 	player p1 = new player();
@@ -65,9 +69,13 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	Image platf;
 
 	// IMAGES
+	Image[] backgrounds = new Image[]{new ImageIcon("Pics/backgrounds/0.gif").getImage(), new ImageIcon("Pics/backgrounds/1.gif").getImage(), new ImageIcon("Pics/backgrounds/2.gif").getImage(), new ImageIcon("Pics/backgrounds/3.gif").getImage()};
+	Image[] backgroundPNG = new Image[]{new ImageIcon("Pics/backgrounds/0.png").getImage(), new ImageIcon("Pics/backgrounds/1.png").getImage(), new ImageIcon("Pics/backgrounds/2.png").getImage(), new ImageIcon("Pics/backgrounds/3.png").getImage()};
+	Image smallPlatform = new ImageIcon("Pics/platform/smallPlatform.png").getImage();
 	Image luffy = new ImageIcon("Pics/luffy/stand/0.png").getImage();
-	Image ichigo = new ImageIcon("Pics/ichigo/pic.png").getImage();
+ 	Image ichigo = new ImageIcon("Pics/ichigo/pic.png").getImage();
 	Image kakashi = new ImageIcon("Pics/kakashi/stand/0.png").getImage();
+	Image aang = new ImageIcon("Pics/aang/stand/0.png").getImage();
 	Image hand = new ImageIcon("Pics/hand.png").getImage();
 	Image p1Circle = new ImageIcon("Pics/p1Circle.png").getImage();
 	Image p2Circle = new ImageIcon("Pics/p2Circle.png").getImage();
@@ -78,7 +86,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
 		back = new ImageIcon("Pics/background.gif").getImage();
 		platf = new ImageIcon("Pics/platform.png").getImage();
-		plat = new Rectangle(200,600,1200,50);
+		plat = new Rectangle(150,600,1200,50);
 		keys = new boolean[KeyEvent.KEY_LAST+1];
 
 		// create an image
@@ -121,12 +129,13 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	}
 
 	public void move(){
-		mx = MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x;
-		my = MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y;
 		if(screen == INTRO){
 			
 		}
 		else if(screen == CHARSELECT){
+			backTimer.update();
+			mx = MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x;
+			my = MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y;
 			if(new Rectangle(75,550,300,300).contains(c1.x,c1.y)){
 				char1 = true;
 				p1 = new player(1, "luffy");
@@ -170,6 +179,10 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			}
 					
 		}
+		else if(screen == MAPSELECT){
+			mx = MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x;
+			my = MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y;
+		}
 		else if(screen == GAME){
 			p1.gravity(plat,plats);
 			p1.move(keys, p1, p2);
@@ -181,11 +194,10 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			p2.friction();
 			p2.update();
 
-			if(p1.health.healthNum <= 0 || p2.health.healthNum <= 0){
+			if(p1.health.hearts <= 0 || p2.health.hearts <= 0){
+
 				screen = END;
 			}
-
-			
 		}
 
 	}
@@ -331,41 +343,42 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	public void mouseClicked(MouseEvent e){
 		int mx = e.getX();
 		int my = e.getY();
-		if(charSel){
-			// if(mx > 100 && mx < 300 && my > 600 && my < 800){
-			// 	if(!char1){
-			// 		char1 = true;
-			// 		p1 = new player(1, "luffy");
-			// 	}
-			// 	else if(!char2 && p1.playerName != "luffy"){
-			// 		char2 = true;
-			// 		p2 = new player(-1, "luffy");
-			// 	}
-			// }
-			// if(mx > 400 && mx < 600 && my > 600 && my < 800){
-			// 	if(!char1){
-			// 		char1 = true;
-			// 		p1 = new player(1, "ichigo");
-			// 	}
-			// 	else if(!char2 && p1.playerName != "ichigo"){
-			// 		System.out.println("ichigo2");
-			// 		char2 = true;
-			// 		p2 = new player(-1, "ichigo");
-			// 	}
-			// }
-			if(char1 && char2 && new Rectangle(getWidth()-200, 0, 200, 100).contains(mx, my)){
-				screen = GAME;
-			}
+		
+		if(screen == MAPSELECT){
+			System.out.println("MAPSELECT");
 			if(new Rectangle(0, 0, 200, 100).contains(mx, my)){
-				screen = INTRO;
+				screen = CHARSELECT;
+				backTimer.reset();
+				System.out.println(backTimer.getTime());
+			}
+			if(new Rectangle(75,550,300,300).contains(mx,my)){
+				mapSelected = 0;
+			 	mapSelect = true;
+			}
+			if(new Rectangle(475,550,300,300).contains(mx,my)){
+				mapSelected = 1;
+			 	mapSelect = true;
+			}
+			if(new Rectangle(875,550,300,300).contains(mx,my)){
+				mapSelected = 2;
+			 	mapSelect = true;
+			}
+			if(new Rectangle(1275,550,300,300).contains(mx,my)){
+				mapSelected = 3;
+			 	mapSelect = true;
+			}
+			if(mapSelect && new Rectangle(getWidth()-200, 0, 200, 100).contains(mx, my)){
+				screen = GAME;
+				back = new ImageIcon("Pics/backgrounds/" + mapSelected + ".gif").getImage();
 			}
 
-			
 		}
 	}
 
 	@Override
-	public void	mouseEntered(MouseEvent e){}
+	public void	mouseEntered(MouseEvent e){
+		
+	}
 
 	@Override
 	public void	mouseExited(MouseEvent e){}
@@ -376,6 +389,14 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
             		repaint();
 		}
 		if(screen == CHARSELECT){
+			if(char1 && char2 && new Rectangle(getWidth()-200, 0, 200, 100).contains(mx, my)){
+				System.out.println("GAME");
+				screen = MAPSELECT;
+			}
+			if(new Rectangle(0, 0, 200, 100).contains(mx, my) && backTimer.getTime() > 200){
+				System.out.println(backTimer.getTime());
+				screen = INTRO;
+			}
 			moveCircle();
 		}
         	if(screen == GAME){
@@ -511,6 +532,9 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 					else if(i == 2){
 						g.drawImage(new ImageIcon("Pics/kakashi/pic.png").getImage(), 375*i+100, 550, 275, 275, null);
 					}
+					else if(i == 3){
+						g.drawImage(new ImageIcon("Pics/aang/pic.png").getImage(), 375*i+100, 550, 275, 275, null);
+					}
 				}
 				if(p1.playerName != ""){
 					if(p1.playerName == "luffy"){
@@ -518,10 +542,13 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 						g.drawImage(luffy, 200, 225, luffy.getWidth(null)*3, luffy.getHeight(null)*3, null);
 					}
 					else if(p1.playerName == "ichigo"){
-						g.drawImage(ichigo, 200, 200, ichigo.getWidth(null), ichigo.getHeight(null), null);
+						g.drawImage(ichigo, 150, 200, ichigo.getWidth(null), ichigo.getHeight(null), null);
 					}
 					else if(p1.playerName == "kakashi"){
 						g.drawImage(kakashi, 200, 200, kakashi.getWidth(null)*5, kakashi.getHeight(null)*5, null);
+					}
+					else if(p1.playerName == "aang"){
+						g.drawImage(aang, 200, 200, aang.getWidth(null)*5, aang.getHeight(null)*5, null);
 					}
 				}
 				if(p2.playerName != ""){
@@ -533,6 +560,9 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 					}
 					else if(p2.playerName == "kakashi"){
 						g.drawImage(kakashi, 950, 200, (kakashi.getWidth(null))*5, kakashi.getHeight(null)*5, null);
+					}
+					else if(p2.playerName == "aang"){
+						g.drawImage(aang, 950, 200, (aang.getWidth(null))*5, aang.getHeight(null)*5, null);
 					}
 				}
 				g.setColor(new Color(0, 0, 0, 200));
@@ -553,23 +583,53 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 				// g.fillPolygon(new int[]{150,250,400,200}, new int[]{100,100,400,400}, 4);
 			}
 			moveHand(g);
-			h.draw(g);
 			c1.draw(g);
 			c2.draw(g);
+			h.draw(g);
 
 		}
+		else if(screen == MAPSELECT){
+			g.setColor(Color.red);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			g.setColor(new Color(10, 10, 10, 100));
+			g.fillRect(50,500,1480,400);
+			for(int i = 0; i < 4; i++){
+				g.setColor(new Color(255, 255, 255, 200));
+				g.fillRect(375*i+85,550,300,300);
+				g.drawImage(backgroundPNG[i], 375*i+85, 550, 300, 300, null);
+				if(i == mapSelected){
+					g.setColor(Color.WHITE);
+					g.fillRect(375 * i + 85, 550, 300, 5);
+					g.fillRect(375 * i + 85, 550, 5, 300);
+					g.fillRect(375 * i + 85, 550 + 300 - 5, 300, 5);
+					g.fillRect(375 * i + 85 + 300 - 5, 550, 5, 300);
+				}
+			}
+			g.setColor(new Color(0, 0, 0, 200));
+			g.fillRect(200,0,getWidth(),100);
+			g.fillRect(0,100,50,getHeight());
+			g.fillRect(getWidth()-50,100,50,getHeight());
+			g.fillRect(50,getHeight()-60,getWidth(),60);
+			g.setColor(new Color(255, 255, 255, 200));
+			g.fillRect(0,0,200,100);
+			g.fillRect(getWidth()-200, 0, 200, 100);
+			g.setFont(fontLocal3);
+			g.setColor(Color.black);
+			drawString(g, "NEXT", getWidth()-200, 0);
+			drawString(g, "BACK", 0, 0);
+			moveHand(g);
+			h.draw(g);
+		}
 	if(screen == GAME){
-		
+		g.setColor(Color.WHITE);
+		g.drawImage(backgroundPNG[mapSelected], 0, 0, backgroundPNG[mapSelected].getWidth(this)*3,backgroundPNG[mapSelected].getHeight(this)*3 , null);
 		g.drawImage(back, -330, 0, back.getWidth(this)*3, back.getHeight(this)*3, this);
-		g.drawImage(platf, plat.x-110, plat.y-30, plat.width+120, 400, this);
+		g.drawImage(platf, plat.x, plat.y, plat.width, 400, this);
 		p1.draw(g);
 		p2.draw(g);
 
-
 		for(Rectangle r:plats){
-			g.setColor(Color.green);
-			g.fillRect(r.x, r.y, r.width, r.height);
-			
+			g.drawImage(smallPlatform, r.x, r.y, r.width, r.height, this);
 		}
 		
 

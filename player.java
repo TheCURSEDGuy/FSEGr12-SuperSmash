@@ -81,53 +81,82 @@ public class player {
         }
 
 
-        public player(int player, String playerName){
-                attack1 = new Image[new File("Pics/" + playerName + "/attack1").listFiles().length];
-                attack2 = new Image[new File("Pics/" + playerName + "/attack2").listFiles().length];
-                jump = new Image[new File("Pics/" + playerName + "/jump").listFiles().length];
-                punch = new Image[new File("Pics/" + playerName + "/punch").listFiles().length];
-                run = new Image[new File("Pics/" + playerName + "/run").listFiles().length];
-                stand = new Image[new File("Pics/" + playerName + "/stand").listFiles().length];
-                ult = new Image[new File("Pics/" + playerName + "/ult").listFiles().length];
-                hit = new Image[new File("Pics/" + playerName + "/hit").listFiles().length];
+        public player(int player, String playerName) {
+                File attack1Folder = new File("Pics/" + playerName + "/attack1");
+                attack1 = new Image[attack1Folder.listFiles().length];
 
-                for(int i = 0; i < attack1.length; i++){
-                        attack1[i] = new ImageIcon("Pics/" + playerName + "/attack1/" + i + ".png").getImage();
+                for (int i = 0; i < attack1.length; i++) {
+                        attack1[i] = new ImageIcon(attack1Folder.getPath() + "/" + i + ".png").getImage();
+                        attack1[i] = attack1[i].getScaledInstance(attack1[i].getWidth(null) * 2, attack1[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
-                for(int i = 0; i < attack2.length; i++){
-                        attack2[i] = new ImageIcon("Pics/" + playerName + "/attack2/" + i + ".png").getImage();
+
+                File attack2Folder = new File("Pics/" + playerName + "/attack2");
+                attack2 = new Image[attack2Folder.listFiles().length];
+                for (int i = 0; i < attack2.length; i++) {
+                        attack2[i] = new ImageIcon(attack2Folder.getPath() + "/" + i + ".png").getImage();
+                        attack2[i] = attack2[i].getScaledInstance(attack2[i].getWidth(null) * 2, attack2[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
-                for(int i = 0; i < jump.length; i++){
-                        jump[i] = new ImageIcon("Pics/" + playerName + "/jump/" + i + ".png").getImage();
+
+                File jumpFolder = new File("Pics/" + playerName + "/jump");
+                jump = new Image[jumpFolder.listFiles().length];
+                for (int i = 0; i < jump.length; i++) {
+                        jump[i] = new ImageIcon(jumpFolder.getPath() + "/" + i + ".png").getImage();
+                        jump[i] = jump[i].getScaledInstance(jump[i].getWidth(null) * 2, jump[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
-                for(int i = 0; i < punch.length; i++){
-                        punch[i] = new ImageIcon("Pics/" + playerName + "/punch/" + i + ".png").getImage();
+
+                File punchFolder = new File("Pics/" + playerName + "/punch");
+                punch = new Image[punchFolder.listFiles().length];
+                for (int i = 0; i < punch.length; i++) {
+                        punch[i] = new ImageIcon(punchFolder.getPath() + "/" + i + ".png").getImage();
+                        punch[i] = punch[i].getScaledInstance(punch[i].getWidth(null) * 2, punch[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
-                for(int i = 0; i < run.length; i++){
-                        run[i] = new ImageIcon("Pics/" + playerName + "/run/" + i + ".png").getImage();
+
+                File runFolder = new File("Pics/" + playerName + "/run");
+                run = new Image[runFolder.listFiles().length];
+                for (int i = 0; i < run.length; i++) {
+                        run[i] = new ImageIcon(runFolder.getPath() + "/" + i + ".png").getImage();
+                        run[i] = run[i].getScaledInstance(run[i].getWidth(null) * 2, run[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
-                for(int i = 0; i < stand.length; i++){
-                        stand[i] = new ImageIcon("Pics/" + playerName + "/stand/" + i + ".png").getImage();
+
+                File standFolder = new File("Pics/" + playerName + "/stand");
+                stand = new Image[standFolder.listFiles().length];
+                for (int i = 0; i < stand.length; i++) {
+                        stand[i] = new ImageIcon(standFolder.getPath() + "/" + i + ".png").getImage();
+                        stand[i] = stand[i].getScaledInstance(stand[i].getWidth(null) * 2, stand[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
-                for(int i = 0; i < ult.length; i++){
-                        ult[i] = new ImageIcon("Pics/" + playerName + "/ult/" + i + ".png").getImage();
+
+                File ultFolder = new File("Pics/" + playerName + "/ult");
+                ult = new Image[ultFolder.listFiles().length];
+                for (int i = 0; i < ult.length; i++) {
+                        ult[i] = new ImageIcon(ultFolder.getPath() + "/" + i + ".png").getImage();
+                        ult[i] = ult[i].getScaledInstance(ult[i].getWidth(null) * 2, ult[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
-                for(int i = 0; i < hit.length; i++){
-                        hit[i] = new ImageIcon("Pics/" + playerName + "/hit/" + i + ".png").getImage();
+
+                File hitFolder = new File("Pics/" + playerName + "/hit");
+                hit = new Image[hitFolder.listFiles().length];
+                for (int i = 0; i < hit.length; i++) {
+                        hit[i] = new ImageIcon(hitFolder.getPath() + "/" + i + ".png").getImage();
+                        hit[i] = hit[i].getScaledInstance(hit[i].getWidth(null) * 2, hit[i].getHeight(null) * 2, Image.SCALE_SMOOTH);
                 }
 
                 this.playerName = playerName;
-
                 x = player == 1 ? 200 : 1300;
                 y = 600;
-                playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
+                playerRect = new Rectangle(x, y, stand[0].getWidth(null), stand[0].getHeight(null));
                 this.player = player;
                 dir = player == 1 ? RIGHT : LEFT;
                 // pU = new powerUps(playerRect.width, playerRect.height, player);
                 health = new healthBar(dir, new ImageIcon("Pics/" + playerName + "/pic.png").getImage());
-
-
         }
+
+        public void walk(){
+                if(cooldown % WAIT == 0){
+                        if(frame >= run.length){
+                                frame = 0;
+                        }
+                }
+        }
+
 
         public void move(boolean keys[], player p1, player p2){
                 // pU.update();
@@ -145,11 +174,13 @@ public class player {
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
+                                walk();
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                                 xVel += speedX;
                         }
                         if(keys[KeyEvent.VK_A]){
+                                walk();
                                 dir = LEFT;
                                 xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
@@ -165,11 +196,13 @@ public class player {
                 }
                 if(player == -1 && status != HIT){
                         if(keys[KeyEvent.VK_RIGHT]){
+                                walk();
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                                 xVel += speedX;
                         }
                         if(keys[KeyEvent.VK_LEFT]){
+                                walk();
                                 dir = LEFT;
                                 xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;

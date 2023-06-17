@@ -9,6 +9,14 @@ public class circle {
         int radius;
         int player;
         boolean isTouched = false;
+        boolean defaulCircle = false;
+
+        public circle(){
+                defaulCircle = true;
+                radius = circle.getWidth(null);
+                y = 200;
+                x = 200;
+        }
         
 
         public circle(int player){
@@ -21,7 +29,7 @@ public class circle {
                 }
                 radius = circle.getWidth(null)/2;
                 y = 200;
-                x = player == 1 ? 400 : 1200;
+                x = player == 1 ? 200 : 1400;
         }
 
         public void isTouched(){
@@ -35,8 +43,11 @@ public class circle {
         }
 
         public void draw(Graphics g){
-                if(!isTouched){
+                if(!isTouched && !defaulCircle){
                         g.drawImage(circle, x-radius, y-radius, null);
+                }
+                if(defaulCircle){
+                        g.drawOval(x, y, radius, radius);
                 }
         }
 }
