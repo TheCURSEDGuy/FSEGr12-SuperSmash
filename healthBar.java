@@ -11,10 +11,10 @@ public class healthBar {
         Image heart = new ImageIcon("Pics/hearts.png").getImage();
         public final int LEFT = -1, RIGHT = 1;
         private int dir;
-        private int hearts = 3;
+        public int hearts = 3;
         private int x,y;
         private int xPer;
-        private int xHearts;
+        public int xHearts;
         public int healthNum = 100;
         private Color healthColor = Color.green;
         private int xhealth;
