@@ -30,8 +30,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
 
 	// AUDIO
-	File woosh = new File("Sounds/woosh.wav");
-    AudioClip wooshS;
+	
 
 
 	
@@ -88,6 +87,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	Image p2Circle = new ImageIcon("Pics/p2Circle.png").getImage();
 	Image p1Menu = new ImageIcon("Pics/player1Menu.png").getImage();
 	Image p2Menu = new ImageIcon("Pics/player2Menu.png").getImage();
+	Image mcKenzie = new ImageIcon("Pics/mckenzie.png").getImage();
 	
 	public GamePanel(){
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
@@ -640,6 +640,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		}
 		
 
+	}
+	if(screen == END){
+		g.setColor(Color.WHITE);
+		g.drawImage(mcKenzie,0,0,mcKenzie.getWidth(this),mcKenzie.getHeight(this),null);
+		g.setFont(fontLocal3);
+		drawString(g, "Thanks for playing, Mr. McKenzie!", 0, 0);
 	}
     }
 }
