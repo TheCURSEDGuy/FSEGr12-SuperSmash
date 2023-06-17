@@ -1,4 +1,4 @@
-public class timer {
+public class timer { // this class is used to keep track of time
         int time = 0;
         public timer(){}
         public timer(int time){this.time = time;}

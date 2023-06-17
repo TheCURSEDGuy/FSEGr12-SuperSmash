@@ -78,18 +78,15 @@ public class player {
         Image[] hit;
         Image[] ultHit;
 
-
-
-
         // powerUps pU;
 
         public player(){
                 playerName = "";
-        }
+        }                                                                                      
 
 
         public player(int player, String playerName){
-                
+                // these are the arrays of images for each action
                 attack1 = new Image[new File("Pics/" + playerName + "/attack1").listFiles().length];
                 attack2 = new Image[new File("Pics/" + playerName + "/attack2").listFiles().length];
                 jump = new Image[new File("Pics/" + playerName + "/jump").listFiles().length];
@@ -100,6 +97,7 @@ public class player {
                 hit = new Image[new File("Pics/" + playerName + "/hit").listFiles().length];
                 ultHit = new Image[new File("Pics/ultHit").listFiles().length];
 
+                // all these for loops are to get the images from the folders
                 for(int i = 0; i < ultHit.length; i++){
                         ultHit[i] = new ImageIcon("Pics/ultHit/" + i + ".png").getImage();
                 }
@@ -173,7 +171,7 @@ public class player {
                 health = new healthBar(dir, new ImageIcon("Pics/" + playerName + "/pic.png").getImage());
         }
 
-        public void walk(){
+        public void walk(){ // this is for the walking animation, resets the frame if it goes over the length of the array
                 if(cooldown % WAIT == 0){
                         if(frame >= run.length){
                                 frame = 0;
@@ -245,24 +243,24 @@ public class player {
                                 yVel -= 15;
                         }
                 }
-                if(xVel > 10 && status != HIT){xVel = 10;}
-                if(xVel < -10 && status != HIT){xVel = -10;}
-                if(pT.getTime() > 10 && status == HIT){status = IDLE; frame = 0;}
+                if(xVel > 10 && status != HIT){xVel = 10;} // this is to make sure the player doesn't go too fast
+                if(xVel < -10 && status != HIT){xVel = -10;} 
+                if(pT.getTime() > 10 && status == HIT){status = IDLE; frame = 0;} // this is to make sure the player doesn't stay in the hit animation for too long
                 if(xVel == 0 && yVel == 0 &&  status != HIT && status != PUNCH && status != JUMP && status != IDLE && status != ATTACK1 && status != ATTACK2 && status != ULT){status = IDLE; frame = 0;}
-                if(xVel%1 != 0 && xVel > -1 && xVel < 1){xVel = 0;}
+                if(xVel%1 != 0 && xVel > -1 && xVel < 1){xVel = 0;} // this is to make sure the player doesn't move when they're not supposed to
                 
                 x += xVel;
                 y += yVel;
-                if(x > 1600 && x < 0){respawn();}
+                if(x > 1600 && x < 0){respawn();} // this is to make sure the player doesn't go off the screen
                 if(y > 1000){respawn();}
                 playerRect = new Rectangle(x,y,stand[0].getWidth(null),stand[0].getHeight(null));
-                if(health.healthNum <= 0){
+                if(health.healthNum <= 0){ // this is for when the player dies
                         respawn();
                 }
-                if(status == ATTACK2 && (playerName == "ichigo" || playerName == "luffy" || playerName == "aang")){
+                if(status == ATTACK2 && (playerName == "ichigo" || playerName == "luffy" || playerName == "aang")){ // this is for the multi hit attack
                         multiHit(thisPlayer, otherPlayer);
                 }
-                if(status == ULT && playerName == "luffy"){
+                if(status == ULT && playerName == "luffy"){ // this is for luffy's ult
                         xVel = dir*10;
                         luffyUlt(thisPlayer, otherPlayer);
                 }
@@ -271,7 +269,7 @@ public class player {
         }
 
         public void punch(player p){
-                if(cooldownBet.getTime() > 30){
+                if(cooldownBet.getTime() > 30){ // this is for the cooldown between punches
                         frame = 0;
                         status = PUNCH;
                         cooldownBet.reset();
@@ -282,15 +280,15 @@ public class player {
                 }
                 
                 
-                if(p.getRect().intersects(getRect()) && status != HIT){
-                        if(numPunches == 9){
+                if(p.getRect().intersects(getRect()) && status != HIT){ // this is for when the player punch
+                        if(numPunches == 9){ // this is for the last punch
                                 p.punched(dir, poweredP, numPunches+1);
                                 typePunch = poweredP;
                                 numPunches = 0;
                                 cooldownP.reset(); 
                                 cooldownBet.reset();
                        }
-                        else if(cooldownP.getTime() > 30){
+                        else if(cooldownP.getTime() > 30){ // this is for the normal punches
                                 cooldownP.reset();
                                 p.punched(dir, 1,numPunches+1);
                                 cooldownBet.reset();                                
@@ -300,7 +298,7 @@ public class player {
                 }
         }
 
-        public void punched(double dir, double dist, int numPunches) {
+        public void punched(double dir, double dist, int numPunches) { // this is for when the player gets punched
                 double yDist = 0;            
                 if (player == 1) {
                     pT.reset();
@@ -308,15 +306,15 @@ public class player {
                     pT.reset();
                 }
                 
-                if(numPunches == 1){
+                if(numPunches == 1){ // this is for the first punch
 
                         yDist = 5;
                 }
-                if (numPunches > 1 && numPunches < 9) {
+                if (numPunches > 1 && numPunches < 9) { // this is for the middle punches
                     dist = 1;
                     yDist = 5;
                 } 
-                else if(numPunches == 10){
+                else if(numPunches == 10){ // this is for the last punch
                     yDist = 10;
                     dist = 10;
                 }
@@ -328,7 +326,7 @@ public class player {
                 status = HIT;
         }
 
-        public void respawn(){
+        public void respawn(){ // this is for when the player respawns
                 health.heartDecrease();
                 health.healthNum = 100;
                 x = player == 1 ? 200 : 1300;
@@ -348,7 +346,7 @@ public class player {
         
         
 
-        public void dash(){
+        public void dash(){ // this is for the dash attack
                 if(cooldownDash.getTime() > 50){
                         frame = 0;
                         status = ATTACK1;
@@ -363,9 +361,9 @@ public class player {
         }
 
 
-    public void multiHit(player attacker, player victim){
-        Rectangle player = new Rectangle(attacker.getRect().x - (int)attacker.getRect().getHeight(), attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height);
-        if(attacker.status == ATTACK2 && player.intersects(victim.getRect())){                
+    public void multiHit(player attacker, player victim){ // this is for the multi hit attack
+        Rectangle player = new Rectangle(attacker.getRect().x - (int)attacker.getRect().getHeight(), attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height); // this is for the hitbox of the attack
+        if(attacker.status == ATTACK2 && player.intersects(victim.getRect())){ // this is for when the player gets hit           
                 victim.health.healthDown(1);
                 victim.frame = 0;
                 victim.status = HIT;
@@ -375,7 +373,7 @@ public class player {
         }
         otherPlayer = victim;
         thisPlayer = attacker;
-        if(cooldownMultiHit.getTime() > 50){
+        if(cooldownMultiHit.getTime() > 50){ // this is for the cooldown between attacks
                 attacker.frame = 0;
                 cooldownMultiHit.reset();
                 attacker.status = ATTACK2;
@@ -388,13 +386,13 @@ public class player {
         victim.isPunched = false;
     }
 
-    public void hardAttack(player attacker, player victim){
-        Rectangle player = attacker.dir == attacker.RIGHT ? new Rectangle(attacker.getRect().x, attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height) : new Rectangle(attacker.getRect().x - attacker.getRect().width, attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height);
-        if(cooldownHardAttack.getTime() > 50){
+    public void hardAttack(player attacker, player victim){ // this is for the hard attack
+        Rectangle player = attacker.dir == attacker.RIGHT ? new Rectangle(attacker.getRect().x, attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height) : new Rectangle(attacker.getRect().x - attacker.getRect().width, attacker.getRect().y, 2*attacker.getRect().width, attacker.getRect().height); // this is for the hitbox of the attack
+        if(cooldownHardAttack.getTime() > 50){ // this is for the cooldown between attacks
                 attacker.frame = 0;
                 attacker.status = ATTACK1;
                 cooldownHardAttack.reset();
-                if(player.intersects(victim.getRect())){
+                if(player.intersects(victim.getRect())){ // this is for when the player gets hit
                         if(attacker.dir == RIGHT){
                                 victim.xVel += 15;
                         }
@@ -407,15 +405,15 @@ public class player {
                         victim.pT.reset();
                         victim.frame = 0;
                         victim.status = HIT;
-                        }
+                }
         }
         victim.isPunched = false;
     }
 
 
-    public void kickUp(player kakashi, player victim){
-        Rectangle player = kakashi.dir == kakashi.RIGHT ? new Rectangle(kakashi.getRect().x, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height) : new Rectangle(kakashi.getRect().x - kakashi.getRect().width, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height);
-        if(cooldownKick.getTime() > 50){
+    public void kickUp(player kakashi, player victim){ // this is for kakashi's kick up attack
+        Rectangle player = kakashi.dir == kakashi.RIGHT ? new Rectangle(kakashi.getRect().x, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height) : new Rectangle(kakashi.getRect().x - kakashi.getRect().width, kakashi.getRect().y, 2*kakashi.getRect().width, kakashi.getRect().height); // this is for the hitbox of the attack
+        if(cooldownKick.getTime() > 50){  // this is for the cooldown between attacks
                 kakashi.frame = 0;
                 kakashi.status = ATTACK2;
                 cooldownKick.reset();
@@ -440,7 +438,7 @@ public class player {
 
 
     
-    public void kakashiUlt(player kakashi, player victim){
+    public void kakashiUlt(player kakashi, player victim){ // this is for kakashi's ult
         if(cooldownUltKak.getTime() > 300){
 
                 kakashi.frame = 0;
@@ -456,7 +454,7 @@ public class player {
         }
     }
 
-    public void aangUlt(player aang, player victim){
+    public void aangUlt(player aang, player victim){ // this is for aang's ult
         if(cooldownUltAang.getTime() > 300){
                 aang.frame = 0;
                 aang.status = ULT;
@@ -470,7 +468,7 @@ public class player {
         }
     }
 
-    public void luffyUlt(player luffy, player victim){
+    public void luffyUlt(player luffy, player victim){ // this is for luffy's ult
         otherPlayer = victim;
         thisPlayer = luffy;
         Rectangle player = luffy.dir == luffy.RIGHT ? new Rectangle(luffy.getRect().x, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height) : new Rectangle(luffy.getRect().x - luffy.getRect().width, luffy.getRect().y, 2*luffy.getRect().width, luffy.getRect().height);
@@ -504,7 +502,7 @@ public class player {
     }
 
 
-    public void ichigoUlt(player ichigo, player victim){
+    public void ichigoUlt(player ichigo, player victim){ // this is for ichigo's ult
             System.out.println(cooldownUltIchigo.getTime());
         if(cooldownUltIchigo.getTime() > 300){
                 ichigo.frame = 0;
@@ -532,7 +530,7 @@ public class player {
 
 
         
-        public void friction(){
+        public void friction(){ 
                 if(xVel > 0){
                         xVel -= 1.5;
                 }
@@ -542,16 +540,8 @@ public class player {
         }
 
         public void gravity(Rectangle plat, Rectangle[] plats){
-                // System.out.println(y + getRect().height+40 + " " + plat.y);
-                // if(y+getRect().height< plat.y){
-                //         topPlat = true;
-                // }
-
-                // else{
-                //         topPlat = false;
-                // }
                 
-                if(getRect().intersects(plat)){
+                if(getRect().intersects(plat)){ // this is for when the player is on a platform
                         jumped = false;
                         
                         if(status != HIT){
@@ -573,7 +563,7 @@ public class player {
                         }
                         
                 }
-                else if(intersectList(plats) && yVel >= 0){
+                else if(intersectList(plats) && yVel >= 0){ // this is for when the player is on a platform
                         jumped = false;
                         if(status != HIT){
                                 yVel = 0;
@@ -616,6 +606,7 @@ public class player {
                 return playerRect;
         }
 
+        // these methods are for the different animations so that the frame doesn't go over the length of the array
         public void move(Image[] move){
                 if(cooldown % WAIT == 0){
                         frame++;

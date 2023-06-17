@@ -1,3 +1,13 @@
+/*
+ * Abderrahim Ghalmi and Adam elHoussami
+ * FINALFSE
+ * This is our final project. It consists of 2 players each having their own fighter. The goal is to defeat the other player. The controls
+ * are: Player 1: WASD, Q for punch, E for hard attack, R for multi hit, S for ultimate. Player 2: Arrow keys, comma for punch, period for hard attack,
+ * slash for multi hit, down arrow for ultimate. In the selection screen, you can choose your character and then choose the map. Drag the ball
+ * with the corresponding player name to the desired character. The game is over when one of the players loses all their hearts. The game is
+ * restarted by pressing the button in the middle of the screen.
+ */ 
+
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
 import java.awt.*;
@@ -26,6 +36,8 @@ public class gameFSE extends JFrame{
 }
 
 class GamePanel extends JPanel implements KeyListener, ActionListener, MouseListener{
+
+	// SCREENS
     	private final int INTRO = 0, CHARSELECT = 1, GAME = 2, MAPSELECT = 3, END = 4;
 	int winner = 0;
 	private int screen = INTRO;
@@ -97,8 +109,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 	Image mcKenzie = new ImageIcon("Pics/mckenzie.png").getImage();
 	
 	public GamePanel(){
-
-
 		plats = new Rectangle[]{new Rectangle(300,400,400,50),new Rectangle(900,400,400,50)};
 		back = new ImageIcon("Pics/background.gif").getImage();
 		platf = new ImageIcon("Pics/platform.png").getImage();
@@ -113,6 +123,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
       		setCursor(cursor);
 
+		// fonts
         	String fName = "TITLEFONT.ttf";
 		String fName2 = "SUBTITLEFONT.otf";
 		String fName3 = "supersmash.ttf";
@@ -148,10 +159,12 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		if(screen == INTRO){
 			
 		}
-		else if(screen == CHARSELECT){
+		else if(screen == CHARSELECT){ // this is where the character selection happens, the characters are chosen by dragging the circle to the character
 			backTimer.update();
 			mx = MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x;
 			my = MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y;
+
+			// c1, c2, and h are the circles and hand that are used to select the characters
 			if(new Rectangle(75,550,300,300).contains(c1.x,c1.y)){
 				char1 = true;
 				p1 = new player(1, "luffy");
@@ -210,10 +223,23 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			p2.friction();
 			p2.update();
 
-			if(p1.health.hearts <= 0 || p2.health.hearts <= 0){
-
+			if(p1.health.hearts <= 0 || p2.health.hearts <= 0){ // if one of the players loses all their hearts, the game is over
+				winner = p1.health.hearts <= 0 ? 2 : 1;
 				screen = END;
 			}
+		}
+		else if(screen == END){ // this is the end screen, it shows the winner and the loser
+			p1 = new player();
+			p2 = new player();
+			mx = MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x;
+			my = MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y;
+			c1.x = getWidth()/2-100;
+			c1.y = getHeight()/2;
+			c2.x = getWidth()/2+100;
+			c2.y = getHeight()/2;
+			mapSelect = false;
+			mapSelected = 5;
+			backTimer.reset();
 		}
 
 	}
@@ -360,8 +386,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		int mx = e.getX();
 		int my = e.getY();
 		
-		if(screen == MAPSELECT){
-			System.out.println("MAPSELECT");
+		if(screen == MAPSELECT){ // this is where the map selection happens, the map is chosen by clicking on the map
 			if(new Rectangle(0, 0, 200, 100).contains(mx, my)){
 				screen = CHARSELECT;
 				backTimer.reset();
@@ -419,6 +444,11 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
             		move();
             		repaint();
         	}	
+		if(screen == END){
+			if(new Rectangle(getHeight()/2-100,getHeight()/2+100,500,100).contains(mx, my)){
+				screen = INTRO;
+			}
+		}
 	}
 
 	@Override
@@ -433,7 +463,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		}
 	}
 
-	public void moveHand(Graphics g){
+	public void moveHand(Graphics g){ // this is the hand that is used to select the characters
 		int x = mx-hand.getWidth(null)/2;
 		int y = my-hand.getHeight(null)/2;
 		h.move(x, y);
@@ -450,17 +480,17 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 		}
 	}
 
-	public void drawString(Graphics g, String text, int x, int y){
-		for(String line : text.split("\n")){
-			g.drawString(line, x, y += g.getFontMetrics().getHeight());
+	public void drawString(Graphics g, String text, int x, int y){ // this is used to draw strings
+		for(String line : text.split("\n")){ // this works for multiple lines
+			g.drawString(line, x, y += g.getFontMetrics().getHeight()); // this draws the string by going down the height of the font
 		}
 		
 	}
 
 	@Override
 	public void paint(Graphics g){
-		if(screen == INTRO){
-			if(txtX < 400){
+		if(screen == INTRO){ // this is the intro screen, it shows the title and the instructions
+			if(txtX < 400){ // this is the animation for the title
 				txtX += 50;	
 			}
 			else if(txtTransparency < 255){
@@ -472,7 +502,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(START && imgtransparency < 255){
 				imgtransparency += 15;
 			}
-			else if(START && imgtransparency >= 255 && polX <= getWidth() && polY <= getHeight()){
+			else if(START && imgtransparency >= 255 && polX <= getWidth() && polY <= getHeight()){ // this is the animation for the background
 				polTransparency = 255;
 				polX += 50;
 				polY += 50;
@@ -528,14 +558,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 			if(fadeINCHAR < 255){
 				fadeINCHAR += 5;
 			}
-			// else if(charTransparency < 200){
-			// 	charTransparency += 10;
-			// 	charX += 5;
-			// 	charY += 20;
-			// 	if(charTransparency > 200){
-			// 		charTransparency = 200;
-			// 	}
-			// }
 			charSel = true;
 			g.setColor(new Color(255, 255, 255, fadeLIGHT));
 			g.fillRect(0, 0, getWidth(), getHeight());
@@ -673,36 +695,18 @@ class GamePanel extends JPanel implements KeyListener, ActionListener, MouseList
 
 	}
 	if(screen == END){
+		moveHand(g);
 		g.setColor(Color.BLACK);
 		g.fillRect(0,0, getWidth(), getHeight());
-		g.drawImage(mcKenzie,getWidth()/2,getHeight()/2 - 300,mcKenzie.getWidth(this),mcKenzie.getHeight(this),null);
-		g.setColor(Color.WHITE);
-
+		g.drawImage(mcKenzie,getWidth()/2-mcKenzie.getWidth(null),getHeight()/2 - 300,mcKenzie.getWidth(this),mcKenzie.getHeight(this),null);
 		g.setFont(fontLocal3);
+		drawString(g, "Player " + winner + " wins!", 100, getHeight()/2-100);
+		g.setColor(Color.GREEN);
+		g.fillRect(getHeight()/2-100,getHeight()/2+100,500,100);
+		g.setColor(Color.WHITE);
+		drawString(g, "Play Again", getHeight()/2-100, getHeight()/2+100);
 		drawString(g, "Thanks for playing, Mr. McKenzie!", 100, getHeight()/2);
+		h.draw(g);
 	}
     }
 }
-	
-
-class SoundEffect{
-    private Clip c;
-    public SoundEffect(String filename){
-        setClip(filename);
-    }
-    public void setClip(String filename){
-        try{
-            File f = new File(filename);
-            c = AudioSystem.getClip();
-            c.open(AudioSystem.getAudioInputStream(f));
-        } catch(Exception e){ System.out.println("error"); }
-    }
-    public void play(){
-        c.setFramePosition(0);
-        c.start();
-    }
-    public void stop(){
-        c.stop();
-    }
-}
-
