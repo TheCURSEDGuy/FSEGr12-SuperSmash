@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 public class player {
         player thisPlayer;
@@ -85,11 +86,14 @@ public class player {
         SoundEffect woosh = new SoundEffect("Sounds/woosh.wav");
 	SoundEffect simpleHit = new SoundEffect("Sounds/simpleHit.wav");
 	SoundEffect hardHit = new SoundEffect("Sounds/hardHit.wav");
+	SoundEffect gameplayNasheed = new SoundEffect("Sounds/gameplayNasheed.wav");
+	SoundEffect endScreenNasheed = new SoundEffect("Sounds/endScreenNasheed.wav");
 	SoundEffect laserbeamSound = new SoundEffect("Sounds/laserbeamSound.wav");
 	SoundEffect luffyUlt = new SoundEffect("Sounds/luffyUlt.wav");
 	SoundEffect ichigoUlt = new SoundEffect("Sounds/ichigoUlt.wav");
 	SoundEffect kakashiUlt = new SoundEffect("Sounds/kakashiUlt.wav");
 	SoundEffect aangUlt = new SoundEffect("Sounds/aangUlt.wav");
+	SoundEffect winnerSound = new SoundEffect("Sounds/winnerSound.wav");
 
         // powerUps pU;
 
@@ -99,6 +103,7 @@ public class player {
 
 
         public player(int player, String playerName){
+                
                 attack1 = new Image[new File("Pics/" + playerName + "/attack1").listFiles().length];
                 attack2 = new Image[new File("Pics/" + playerName + "/attack2").listFiles().length];
                 jump = new Image[new File("Pics/" + playerName + "/jump").listFiles().length];
@@ -212,16 +217,16 @@ public class player {
                 if(pT.getTime() > 10 && isPunched){isPunched = false;}
                 if(player == 1 && status != HIT){
                         if(keys[KeyEvent.VK_D]){
-                                walk();
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                                 xVel += speedX;
+                                walk();
                         }
                         if(keys[KeyEvent.VK_A]){
-                                walk();
                                 dir = LEFT;
                                 xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
+                                walk();
 
                         }
         
@@ -234,16 +239,17 @@ public class player {
                 }
                 if(player == -1 && status != HIT){
                         if(keys[KeyEvent.VK_RIGHT]){
-                                walk();
                                 dir = RIGHT;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
                                 xVel += speedX;
+                                walk();
                         }
                         if(keys[KeyEvent.VK_LEFT]){
-                                walk();
                                 dir = LEFT;
                                 xVel -= speedX;
                                 status = status != JUMP && status != HIT ? WALK : JUMP;
+                                walk();
+
                         }
                         
                         if(keys[KeyEvent.VK_UP] && !jumped){
@@ -702,6 +708,8 @@ public class player {
                         }
                 }
                 else if(status == HIT){
+
+                        System.out.println(frame + " " + playerName);
                         hit();
                         if (dir == RIGHT){
                                 g.drawImage(hit[frame], x, y, null);
@@ -768,3 +776,7 @@ public class player {
                 }
         }
 }
+
+
+
+
